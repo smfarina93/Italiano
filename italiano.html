@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Italiano">
+<title>Italiano Daily</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#080C14;--surface:#0E1420;--surface2:#131B2A;
+    --border:rgba(99,179,237,0.10);--text:#E2E8F0;--muted:rgba(226,232,240,0.35);
+    --accent:#63B3ED;--accent-light:rgba(99,179,237,0.12);
+    --green:#48BB78;--green-light:rgba(72,187,120,0.12);
+    --amber:#F6AD55;--amber-light:rgba(246,173,85,0.12);
+    --blue:#63B3ED;--blue-light:rgba(99,179,237,0.12);
+    --purple:#A78BFA;--purple-light:rgba(167,139,250,0.12);
+    --italian:#F6AD55;--italian-light:rgba(246,173,85,0.12);
+    --r:14px;--r-sm:8px;
+  }
+  body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border);}
+  .logo{font-size:18px;font-weight:600;color:var(--text);letter-spacing:0.02em;display:flex;align-items:center;gap:10px;}
+  .streak{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--accent);background:var(--accent-light);padding:4px 12px;border-radius:20px;border:1px solid var(--border);}
+  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:57px;z-index:9;}
+  .tab{flex:1;padding:12px 4px;text-align:center;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .screen{display:none;padding:20px;padding-bottom:40px;}
+  .screen.active{display:block;}
+
+  /* HOME */
+  .greeting{font-size:26px;font-weight:600;line-height:1.2;margin-bottom:4px;letter-spacing:-0.02em;}
+  .date-line{font-size:13px;color:var(--muted);margin-bottom:24px;}
+  .goal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;margin-bottom:12px;transition:transform .15s;-webkit-tap-highlight-color:transparent;}
+  .goal-card:active{transform:scale(0.98);}
+  .goal-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-weight:700;}
+  .goal-icon.flash{background:var(--italian-light);color:var(--italian);}
+  .goal-icon.vocab{background:var(--purple-light);color:var(--purple);}
+  .goal-icon.audio{background:var(--blue-light);color:var(--blue);}
+  .goal-content{flex:1;}
+  .goal-title{font-weight:500;font-size:14px;margin-bottom:6px;}
+  .goal-progress-bar{height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+  .goal-fill-orange{height:3px;background:var(--italian);border-radius:2px;transition:width .4s;}
+  .goal-fill-purple{height:3px;background:var(--purple);border-radius:2px;transition:width .4s;}
+  .goal-fill-blue{height:3px;background:var(--blue);border-radius:2px;transition:width .4s;}
+  .goal-meta{font-size:11px;color:var(--muted);margin-top:4px;}
+  .goal-arrow{color:var(--muted);font-size:18px;}
+  .section-title{font-size:11px;font-weight:500;margin-bottom:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);}
+  .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 10px;text-align:center;}
+  .stat-num{font-size:24px;font-weight:600;color:var(--accent);letter-spacing:-0.02em;}
+  .stat-label{font-size:11px;color:var(--muted);margin-top:2px;}
+
+  /* FLASHCARDS */
+  .filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+  .pill{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+  .pill.t-active{background:var(--blue);color:#080C14;border-color:var(--blue);}
+  .pill.v-active{background:var(--purple);color:#080C14;border-color:var(--purple);}
+  .pill.i-active{background:var(--italian);color:#080C14;border-color:var(--italian);}
+
+  .card-counter{text-align:center;font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .card-area{perspective:1200px;height:300px;margin-bottom:18px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .card-inner{position:relative;width:100%;height:100%;transition:transform 0.5s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;}
+  .card-inner.flipped{transform:rotateY(180deg);}
+  .card-face{position:absolute;inset:0;background:var(--surface);border:1px solid rgba(99,179,237,0.15);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+  .card-back{transform:rotateY(180deg);}
+  .card-chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;}
+  .chip{font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;}
+  .chip-it{background:var(--italian-light);color:var(--italian);border:1px solid rgba(246,173,85,0.2);}
+  .chip-tense{background:var(--blue-light);color:var(--blue);border:1px solid rgba(99,179,237,0.2);}
+  .chip-pronoun{background:var(--purple-light);color:var(--purple);border:1px solid rgba(167,139,250,0.2);}
+  .chip-vocab{background:var(--green-light);color:var(--green);border:1px solid rgba(72,187,120,0.2);}
+  .card-main{font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-0.02em;}
+  .card-main.sm{font-size:18px;}
+  .card-lang{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .card-sub{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  .card-hint{font-size:11px;color:var(--muted);margin-top:16px;opacity:.5;letter-spacing:0.05em;text-transform:uppercase;}
+  .card-actions{display:flex;gap:12px;}
+  .btn-again{flex:1;padding:14px;border-radius:var(--r);border:1px solid rgba(99,179,237,0.2);background:var(--surface2);font-size:14px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;}
+  .btn-got{flex:1;padding:14px;border-radius:var(--r);border:none;background:var(--green);font-size:14px;font-weight:500;cursor:pointer;color:#080C14;font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;}
+  .btn-primary{width:100%;padding:14px;border-radius:var(--r);background:var(--accent);color:#080C14;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;margin-top:16px;}
+  .flip-hint{display:flex;justify-content:center;margin-top:12px;}
+  .fc-done{text-align:center;padding:40px 20px;}
+  .fc-done-icon{font-size:48px;margin-bottom:12px;}
+  .fc-done-title{font-size:22px;font-weight:600;margin-bottom:8px;letter-spacing:-0.02em;}
+  .fc-done-sub{color:var(--muted);font-size:14px;margin-bottom:4px;}
+
+  /* AUDIO */
+  .audio-stats-row{display:flex;gap:10px;margin-bottom:20px;}
+  .audio-stat{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;text-align:center;}
+  .audio-stat-num{font-size:20px;font-weight:600;color:var(--blue);letter-spacing:-0.02em;}
+  .audio-stat-label{font-size:11px;color:var(--muted);margin-top:2px;}
+  .drill-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;}
+  .drill-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .drill-title{font-weight:500;font-size:14px;}
+  .drill-subtitle{font-size:11px;color:var(--muted);margin-top:3px;}
+  .drill-play-btn{width:40px;height:40px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;color:#080C14;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+  .drill-play-btn.playing{background:rgba(226,232,240,0.15);color:var(--text);}
+  .drill-rows{border-top:1px solid var(--border);}
+  .drill-row{display:flex;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border);gap:8px;}
+  .drill-row:last-child{border-bottom:none;}
+  .drill-row.active-row{background:rgba(99,179,237,0.08);}
+  .drill-row-pr{font-size:10px;font-weight:500;color:var(--purple);background:var(--purple-light);padding:2px 8px;border-radius:10px;white-space:nowrap;min-width:56px;text-align:center;border:1px solid rgba(167,139,250,0.2);}
+  .drill-row-it{font-size:14px;font-weight:500;flex:1;color:var(--italian);}
+  .drill-row-es{font-size:12px;color:var(--muted);flex:1;text-align:right;}
+  .wave-bars{display:flex;align-items:center;gap:2px;height:14px;flex-shrink:0;}
+  .wave-bar{width:3px;border-radius:2px;background:var(--accent);animation:wave 0.8s ease-in-out infinite;}
+  .wave-bar:nth-child(1){animation-delay:0s;height:5px}
+  .wave-bar:nth-child(2){animation-delay:.1s;height:11px}
+  .wave-bar:nth-child(3){animation-delay:.2s;height:7px}
+  .wave-bar:nth-child(4){animation-delay:.3s;height:13px}
+  .wave-bar:nth-child(5){animation-delay:.4s;height:5px}
+  @keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.3)}}
+  .audio-search{width:100%;padding:10px 14px;border-radius:var(--r-sm);border:1px solid rgba(99,179,237,0.15);background:var(--surface2);font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);margin-bottom:14px;outline:none;}
+  .audio-search:focus{border-color:var(--accent);}
+
+  /* VOCAB */
+  .vocab-card{background:var(--surface);border:1px solid rgba(167,139,250,0.2);border-radius:20px;padding:28px 24px;text-align:center;margin-bottom:18px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .vocab-it{font-size:28px;font-weight:600;color:var(--italian);margin-bottom:6px;letter-spacing:-0.02em;}
+  .vocab-pos{font-size:11px;color:var(--muted);margin-bottom:14px;letter-spacing:0.08em;text-transform:uppercase;}
+  .vocab-es{font-size:22px;font-weight:600;color:var(--text);margin-bottom:8px;}
+  .vocab-ex-it{font-size:13px;color:var(--italian);opacity:.7;margin-bottom:4px;font-style:italic;}
+  .vocab-ex-es{font-size:13px;color:var(--muted);}
+
+  /* SETTINGS */
+  .settings-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px;}
+  .settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);}
+  .settings-row:last-child{border-bottom:none;}
+  .settings-label{font-size:14px;font-weight:500;}
+  .settings-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+  .num-input{display:flex;align-items:center;gap:10px;}
+  .num-btn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(99,179,237,0.2);background:var(--surface2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--accent);-webkit-tap-highlight-color:transparent;}
+  .num-val{font-weight:500;font-size:15px;min-width:30px;text-align:center;}
+  .pwa-banner{background:var(--green-light);border:1px solid rgba(72,187,120,0.25);border-radius:var(--r);padding:14px 16px;margin-bottom:20px;}
+  .pwa-banner-title{font-weight:500;font-size:14px;color:var(--green);margin-bottom:4px;}
+  .pwa-banner-body{font-size:13px;color:rgba(72,187,120,0.8);line-height:1.5;}
+  .hidden{display:none!important;}
+  .lang-badge{font-size:10px;font-weight:600;letter-spacing:0.08em;padding:2px 7px;border-radius:4px;text-transform:uppercase;}
+  .lang-it{background:var(--italian-light);color:var(--italian);border:1px solid rgba(246,173,85,0.3);}
+  .lang-es{background:var(--blue-light);color:var(--blue);border:1px solid rgba(99,179,237,0.3);}
+</style>
+</head>
+<body>
+
+<!-- PROFILE PICKER -->
+<div id="profile-screen" style="min-height:100vh;background:#080C14;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;max-width:430px;margin:0 auto;">
+  <div style="font-family:'Space Grotesk',sans-serif;text-align:center;width:100%;">
+    <div style="font-size:13px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(246,173,85,0.5);margin-bottom:16px;">italiano.</div>
+    <div style="font-size:28px;font-weight:600;color:#E2E8F0;margin-bottom:8px;letter-spacing:-0.02em;">Chi studia?</div>
+    <div style="font-size:14px;color:rgba(226,232,240,0.35);margin-bottom:48px;">Tap your name to load your progress.</div>
+    <div style="display:flex;flex-direction:column;gap:14px;width:100%;">
+      <button onclick="selectProfile('bernardo')" style="width:100%;padding:20px;border-radius:16px;background:#0E1420;border:1px solid rgba(246,173,85,0.2);font-family:'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;gap:16px;text-align:left;-webkit-tap-highlight-color:transparent;">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(246,173,85,0.12);border:1px solid rgba(246,173,85,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;color:var(--italian);flex-shrink:0;">B</div>
+        <div>
+          <div style="font-size:17px;font-weight:600;color:#E2E8F0;margin-bottom:3px;">Bernardo</div>
+          <div style="font-size:12px;color:rgba(226,232,240,0.35);" id="bernardo-stats">Loading...</div>
+        </div>
+        <div style="margin-left:auto;color:rgba(246,173,85,0.4);font-size:20px;">›</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app-screen" style="display:none">
+
+<div class="top-bar">
+  <div class="logo">
+    <span id="profile-badge" onclick="showProfileScreen()" style="font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;background:rgba(246,173,85,0.1);border:1px solid rgba(246,173,85,0.2);color:var(--italian);cursor:pointer;-webkit-tap-highlight-color:transparent;letter-spacing:0.02em;"></span>
+    <span style="color:rgba(226,232,240,0.3);font-size:14px;font-weight:300;">italiano</span>
+  </div>
+  <div class="streak">🔥 <span id="streak-num">0</span> day streak</div>
+</div>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('home')">Home</div>
+  <div class="tab" onclick="switchTab('flashcards')">Cards</div>
+  <div class="tab" onclick="switchTab('vocab')">Vocab</div>
+  <div class="tab" onclick="switchTab('audio')">Audio</div>
+  <div class="tab" onclick="switchTab('settings')">Goals</div>
+</div>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <p class="greeting" id="greeting-text">Ciao,<br>keep drilling.</p>
+  <p class="date-line" id="today-date"></p>
+  <div class="goal-card" onclick="switchTab('flashcards')">
+    <div class="goal-icon flash">IT</div>
+    <div class="goal-content">
+      <div class="goal-title">Conjugation cards</div>
+      <div class="goal-progress-bar"><div class="goal-fill-orange" id="fc-bar" style="width:0%"></div></div>
+      <div class="goal-meta" id="fc-meta">0 / 30 today</div>
+    </div>
+    <div class="goal-arrow">›</div>
+  </div>
+  <div class="goal-card" onclick="switchTab('vocab')">
+    <div class="goal-icon vocab">V</div>
+    <div class="goal-content">
+      <div class="goal-title">Vocabulary cards</div>
+      <div class="goal-progress-bar"><div class="goal-fill-purple" id="voc-bar" style="width:0%"></div></div>
+      <div class="goal-meta" id="voc-meta">0 / 20 today</div>
+    </div>
+    <div class="goal-arrow">›</div>
+  </div>
+  <div class="goal-card" onclick="switchTab('audio')">
+    <div class="goal-icon audio">▶</div>
+    <div class="goal-content">
+      <div class="goal-title">Audio drills</div>
+      <div class="goal-progress-bar"><div class="goal-fill-blue" id="audio-bar" style="width:0%"></div></div>
+      <div class="goal-meta" id="audio-meta">0 / 10 min today</div>
+    </div>
+    <div class="goal-arrow">›</div>
+  </div>
+  <div class="section-title" style="margin-top:8px">This week</div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="stat-mastered">0</div><div class="stat-label">Mastered</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-reviewing">0</div><div class="stat-label">Reviewing</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-listen">0m</div><div class="stat-label">Listened</div></div>
+  </div>
+  <div class="pwa-banner">
+    <div class="pwa-banner-title">📱 Add to home screen</div>
+    <div class="pwa-banner-body">iPhone: Share → "Add to Home Screen"<br>Android: Menu → "Add to Home Screen"</div>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="screen" id="screen-flashcards">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+    <span class="lang-badge lang-it">IT</span>
+    <span style="font-size:11px;color:var(--muted);">→</span>
+    <span class="lang-badge lang-es">ES</span>
+    <span style="font-size:11px;color:var(--muted);margin-left:4px;">Conjugation drill</span>
+  </div>
+  <div class="filter-row" id="fc-tense-pills"></div>
+  <div id="fc-main">
+    <div class="card-counter" id="card-counter">Card 1</div>
+    <div class="card-area" onclick="flipCard()">
+      <div class="card-inner" id="card-inner">
+        <div class="card-face card-front">
+          <div class="card-chips" id="front-chips"></div>
+          <div class="card-lang">italiano</div>
+          <div class="card-main" id="front-text"></div>
+          <div class="card-hint">tap to reveal</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-chips" id="back-chips"></div>
+          <div class="card-lang">español</div>
+          <div class="card-main sm" id="back-text"></div>
+          <div class="card-sub" id="back-sub"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-actions hidden" id="card-actions">
+      <button class="btn-again" onclick="cardAnswer(false)">Again</button>
+      <button class="btn-got" onclick="cardAnswer(true)">✓ Got it</button>
+    </div>
+    <div class="hidden" id="card-secondary-actions" style="display:flex;gap:10px;margin-top:10px;justify-content:center;">
+      <button onclick="speakCurrentCard()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'Space Grotesk',sans-serif;">▶ Repeat</button>
+      <button onclick="flipBackCard()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;">↩ Italian</button>
+    </div>
+    <div class="flip-hint" id="flip-hint">
+      <button class="btn-again" style="max-width:180px" onclick="flipCard()">Flip</button>
+    </div>
+  </div>
+  <div class="fc-done hidden" id="fc-done">
+    <div class="fc-done-icon">🎉</div>
+    <div class="fc-done-title">Goal reached!</div>
+    <div class="fc-done-sub">Keep drilling or come back tomorrow.</div>
+    <button class="btn-primary" onclick="keepGoing()">Keep going</button>
+  </div>
+</div>
+
+<!-- VOCABULARY -->
+<div class="screen" id="screen-vocab">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="lang-badge lang-it">IT</span>
+      <span style="font-size:11px;color:var(--muted);">→</span>
+      <span class="lang-badge lang-es">ES</span>
+    </div>
+    <span style="font-size:12px;color:var(--muted);" id="vocab-counter"></span>
+  </div>
+  <div id="vocab-main">
+    <div class="vocab-card" onclick="flipVocabCard()" id="vocab-card">
+      <div class="card-chips" id="vocab-front-chips"></div>
+      <div class="vocab-it" id="vocab-it-text"></div>
+      <div class="vocab-pos" id="vocab-pos-text"></div>
+      <div class="vocab-es hidden" id="vocab-es-text"></div>
+      <div class="vocab-ex-it hidden" id="vocab-ex-it"></div>
+      <div class="vocab-ex-es hidden" id="vocab-ex-es"></div>
+      <div class="card-hint" id="vocab-hint">tap to reveal</div>
+    </div>
+    <div class="card-actions hidden" id="vocab-actions">
+      <button class="btn-again" onclick="vocabAnswer(false)">Again</button>
+      <button class="btn-got" onclick="vocabAnswer(true)">✓ Got it</button>
+    </div>
+    <div class="flip-hint hidden" id="vocab-flip-shown">
+      <button onclick="speakVocabCard()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'Space Grotesk',sans-serif;">▶ Repeat</button>
+    </div>
+  </div>
+  <div class="fc-done hidden" id="vocab-done">
+    <div class="fc-done-icon">🎉</div>
+    <div class="fc-done-title">Vocab goal hit!</div>
+    <div class="fc-done-sub">You nailed your daily vocab target.</div>
+    <button class="btn-primary" onclick="keepGoingVocab()">Keep going</button>
+  </div>
+</div>
+
+<!-- AUDIO -->
+<div class="screen" id="screen-audio">
+  <div class="audio-stats-row">
+    <div class="audio-stat"><div class="audio-stat-num" id="aud-today">0.0</div><div class="audio-stat-label">Min today</div></div>
+    <div class="audio-stat"><div class="audio-stat-num" id="aud-drills">0</div><div class="audio-stat-label">Drills run</div></div>
+    <div class="audio-stat"><div class="audio-stat-num" id="aud-total">0.0</div><div class="audio-stat-label">Min total</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;">
+    <span style="font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;">Speed</span>
+    <input type="range" min="1" max="5" step="1" value="2" id="speed-slider" oninput="setAudioSpeed(parseInt(this.value))" style="flex:1;accent-color:var(--accent);">
+    <span id="speed-val" style="font-size:13px;font-weight:500;color:var(--accent);min-width:60px;text-align:right;">Slow</span>
+  </div>
+  <div class="filter-row" id="audio-tense-pills"></div>
+  <input class="audio-search" type="search" placeholder="Search sentences..." oninput="filterAudio(this.value)">
+  <div id="audio-drill-list"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="screen" id="screen-settings">
+  <div class="section-title">Daily goals</div>
+  <div class="settings-section">
+    <div class="settings-row">
+      <div><div class="settings-label">Conjugation cards</div><div class="settings-sub">IT → ES verb forms</div></div>
+      <div class="num-input">
+        <div class="num-btn" onclick="adj('fc',-5)">−</div>
+        <div class="num-val" id="g-fc">30</div>
+        <div class="num-btn" onclick="adj('fc',5)">+</div>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Vocabulary cards</div><div class="settings-sub">Common Italian words</div></div>
+      <div class="num-input">
+        <div class="num-btn" onclick="adj('voc',-5)">−</div>
+        <div class="num-val" id="g-voc">20</div>
+        <div class="num-btn" onclick="adj('voc',5)">+</div>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div><div class="settings-label">Audio minutes</div><div class="settings-sub">Italian listening drills</div></div>
+      <div class="num-input">
+        <div class="num-btn" onclick="adj('audio',-5)">−</div>
+        <div class="num-val" id="g-audio">10</div>
+        <div class="num-btn" onclick="adj('audio',5)">+</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title">Voice</div>
+  <div class="settings-section">
+    <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px">
+      <div><div class="settings-label">Italian voice</div><div class="settings-sub">iOS: Settings → Accessibility → Spoken Content → Voices → Italian → download Enhanced</div></div>
+      <select id="voice-select" onchange="onVoiceChange(this.value)" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
+        <option>Loading voices...</option>
+      </select>
+    </div>
+  </div>
+  <div class="section-title">Deck info</div>
+  <div class="settings-section">
+    <div class="settings-row"><div><div class="settings-label" id="deck-count">Loading...</div><div class="settings-sub">Total conjugation cards</div></div></div>
+    <div class="settings-row"><div><div class="settings-label" id="vocab-count">Loading...</div><div class="settings-sub">Vocabulary cards</div></div></div>
+    <div class="settings-row"><div><div class="settings-label">6 pronouns × 5 tenses per sentence</div><div class="settings-sub">presente, passato prossimo, imperfetto, futuro, congiuntivo</div></div></div>
+  </div>
+</div>
+
+</div><!-- end app-screen -->
+
+<script>
+// ── PRONOUNS (Italian) ──
+const PRONOUNS_IT = ['io','tu','lui/lei','noi','voi','loro'];
+const PRONOUNS_ES = ['yo','tú','él/ella','nosotros','vosotros','ellos'];
+
+const TENSES = [
+  {key:'presente',    label:'Presente'},
+  {key:'passato',     label:'Passato'},
+  {key:'imperfetto',  label:'Imperfetto'},
+  {key:'futuro',      label:'Futuro'},
+  {key:'congiuntivo', label:'Congiuntivo'},
+];
+
+// ── SENTENCES: Italian conjs + Spanish equivalents ──
+// Each sentence: conjs_it[tense][6] = Italian forms, conjs_es[tense][6] = Spanish equivalents
+const SENTENCES = [
+  {
+    base_it:'andare al lavoro ogni mattina', base_es:'ir al trabajo cada mañana',
+    vocab_it:'andare al lavoro', vocab_es:'ir al trabajo',
+    conjs_it:{
+      presente:    ['vado al lavoro ogni mattina','vai al lavoro ogni mattina','va al lavoro ogni mattina','andiamo al lavoro ogni mattina','andate al lavoro ogni mattina','vanno al lavoro ogni mattina'],
+      passato:     ['sono andato al lavoro stamattina','sei andato al lavoro stamattina','è andato al lavoro stamattina','siamo andati al lavoro stamattina','siete andati al lavoro stamattina','sono andati al lavoro stamattina'],
+      imperfetto:  ['andavo al lavoro tutti i giorni','andavi al lavoro tutti i giorni','andava al lavoro tutti i giorni','andavamo al lavoro tutti i giorni','andavate al lavoro tutti i giorni','andavano al lavoro tutti i giorni'],
+      futuro:      ['andrò al lavoro domani mattina','andrai al lavoro domani mattina','andrà al lavoro domani mattina','andremo al lavoro domani mattina','andrete al lavoro domani mattina','andranno al lavoro domani mattina'],
+      congiuntivo: ['vada al lavoro in tempo','vada al lavoro in tempo','vada al lavoro in tempo','andiamo al lavoro in tempo','andiate al lavoro in tempo','vadano al lavoro in tempo'],
+    },
+    conjs_es:{
+      presente:    ['voy al trabajo cada mañana','vas al trabajo cada mañana','va al trabajo cada mañana','vamos al trabajo cada mañana','vais al trabajo cada mañana','van al trabajo cada mañana'],
+      passato:     ['fui al trabajo esta mañana','fuiste al trabajo esta mañana','fue al trabajo esta mañana','fuimos al trabajo esta mañana','fuisteis al trabajo esta mañana','fueron al trabajo esta mañana'],
+      imperfetto:  ['iba al trabajo todos los días','ibas al trabajo todos los días','iba al trabajo todos los días','íbamos al trabajo todos los días','ibais al trabajo todos los días','iban al trabajo todos los días'],
+      futuro:      ['iré al trabajo mañana temprano','irás al trabajo mañana temprano','irá al trabajo mañana temprano','iremos al trabajo mañana temprano','iréis al trabajo mañana temprano','irán al trabajo mañana temprano'],
+      congiuntivo: ['vaya al trabajo a tiempo','vayas al trabajo a tiempo','vaya al trabajo a tiempo','vayamos al trabajo a tiempo','vayáis al trabajo a tiempo','vayan al trabajo a tiempo'],
+    }
+  },
+  {
+    base_it:'svegliarsi presto per fare sport', base_es:'despertarse temprano para hacer ejercicio',
+    vocab_it:'svegliarsi presto', vocab_es:'despertarse temprano',
+    conjs_it:{
+      presente:    ['mi sveglio presto per fare sport','ti svegli presto per fare sport','si sveglia presto per fare sport','ci svegliamo presto per fare sport','vi svegliate presto per fare sport','si svegliano presto per fare sport'],
+      passato:     ['mi sono svegliato presto per fare sport','ti sei svegliato presto per fare sport','si è svegliato presto per fare sport','ci siamo svegliati presto per fare sport','vi siete svegliati presto per fare sport','si sono svegliati presto per fare sport'],
+      imperfetto:  ['mi svegliavo presto per fare sport','ti svegliavi presto per fare sport','si svegliava presto per fare sport','ci svegliavamo presto per fare sport','vi svegliavate presto per fare sport','si svegliavano presto per fare sport'],
+      futuro:      ['mi sveglierò presto per fare sport','ti sveglierai presto per fare sport','si sveglierà presto per fare sport','ci sveglieremo presto per fare sport','vi sveglierete presto per fare sport','si sveglieranno presto per fare sport'],
+      congiuntivo: ['mi svegli presto per fare sport','ti svegli presto per fare sport','si svegli presto per fare sport','ci svegliamo presto per fare sport','vi svegliate presto per fare sport','si sveglino presto per fare sport'],
+    },
+    conjs_es:{
+      presente:    ['me despierto temprano para hacer ejercicio','te despiertas temprano para hacer ejercicio','se despierta temprano para hacer ejercicio','nos despertamos temprano para hacer ejercicio','os despertáis temprano para hacer ejercicio','se despiertan temprano para hacer ejercicio'],
+      passato:     ['me desperté temprano para hacer ejercicio','te despertaste temprano para hacer ejercicio','se despertó temprano para hacer ejercicio','nos despertamos temprano para hacer ejercicio','os despertasteis temprano para hacer ejercicio','se despertaron temprano para hacer ejercicio'],
+      imperfetto:  ['me despertaba temprano para hacer ejercicio','te despertabas temprano para hacer ejercicio','se despertaba temprano para hacer ejercicio','nos despertábamos temprano para hacer ejercicio','os despertabais temprano para hacer ejercicio','se despertaban temprano para hacer ejercicio'],
+      futuro:      ['me despertaré temprano para hacer ejercicio','te despertarás temprano para hacer ejercicio','se despertará temprano para hacer ejercicio','nos despertaremos temprano para hacer ejercicio','os despertaréis temprano para hacer ejercicio','se despertarán temprano para hacer ejercicio'],
+      congiuntivo: ['me despierte temprano para hacer ejercicio','te despiertes temprano para hacer ejercicio','se despierte temprano para hacer ejercicio','nos despertemos temprano para hacer ejercicio','os despertéis temprano para hacer ejercicio','se despierten temprano para hacer ejercicio'],
+    }
+  },
+  {
+    base_it:'tornare a casa tardi per il traffico', base_es:'llegar tarde a casa por el tráfico',
+    vocab_it:'tornare a casa tardi', vocab_es:'llegar tarde a casa',
+    conjs_it:{
+      presente:    ['torno a casa tardi per il traffico','torni a casa tardi per il traffico','torna a casa tardi per il traffico','torniamo a casa tardi per il traffico','tornate a casa tardi per il traffico','tornano a casa tardi per il traffico'],
+      passato:     ['sono tornato a casa tardi per il traffico','sei tornato a casa tardi per il traffico','è tornato a casa tardi per il traffico','siamo tornati a casa tardi per il traffico','siete tornati a casa tardi per il traffico','sono tornati a casa tardi per il traffico'],
+      imperfetto:  ['tornavo a casa tardi per il traffico','tornavi a casa tardi per il traffico','tornava a casa tardi per il traffico','tornavamo a casa tardi per il traffico','tornavate a casa tardi per il traffico','tornavano a casa tardi per il traffico'],
+      futuro:      ['tornerò a casa tardi per il traffico','tornerai a casa tardi per il traffico','tornerà a casa tardi per il traffico','torneremo a casa tardi per il traffico','tornerete a casa tardi per il traffico','torneranno a casa tardi per il traffico'],
+      congiuntivo: ['torni a casa tardi per il traffico','torni a casa tardi per il traffico','torni a casa tardi per il traffico','torniamo a casa tardi per il traffico','torniate a casa tardi per il traffico','tornino a casa tardi per il traffico'],
+    },
+    conjs_es:{
+      presente:    ['llego tarde a casa por el tráfico','llegas tarde a casa por el tráfico','llega tarde a casa por el tráfico','llegamos tarde a casa por el tráfico','llegáis tarde a casa por el tráfico','llegan tarde a casa por el tráfico'],
+      passato:     ['llegué tarde a casa por el tráfico','llegaste tarde a casa por el tráfico','llegó tarde a casa por el tráfico','llegamos tarde a casa por el tráfico','llegasteis tarde a casa por el tráfico','llegaron tarde a casa por el tráfico'],
+      imperfetto:  ['llegaba tarde a casa por el tráfico','llegabas tarde a casa por el tráfico','llegaba tarde a casa por el tráfico','llegábamos tarde a casa por el tráfico','llegabais tarde a casa por el tráfico','llegaban tarde a casa por el tráfico'],
+      futuro:      ['llegaré tarde a casa por el tráfico','llegarás tarde a casa por el tráfico','llegará tarde a casa por el tráfico','llegaremos tarde a casa por el tráfico','llegaréis tarde a casa por el tráfico','llegarán tarde a casa por el tráfico'],
+      congiuntivo: ['llegue tarde a casa por el tráfico','llegues tarde a casa por el tráfico','llegue tarde a casa por el tráfico','lleguemos tarde a casa por el tráfico','lleguéis tarde a casa por el tráfico','lleguen tarde a casa por el tráfico'],
+    }
+  },
+  {
+    base_it:'cucinare la cena per tutta la famiglia', base_es:'hacer la cena para toda la familia',
+    vocab_it:'cucinare la cena', vocab_es:'hacer la cena',
+    conjs_it:{
+      presente:    ['cucino la cena per tutta la famiglia','cucini la cena per tutta la famiglia','cucina la cena per tutta la famiglia','cuciniamo la cena per tutta la famiglia','cucinate la cena per tutta la famiglia','cucinano la cena per tutta la famiglia'],
+      passato:     ['ho cucinato la cena per tutta la famiglia','hai cucinato la cena per tutta la famiglia','ha cucinato la cena per tutta la famiglia','abbiamo cucinato la cena per tutta la famiglia','avete cucinato la cena per tutta la famiglia','hanno cucinato la cena per tutta la famiglia'],
+      imperfetto:  ['cucinavo la cena per tutta la famiglia','cucinavi la cena per tutta la famiglia','cucinava la cena per tutta la famiglia','cucinavamo la cena per tutta la famiglia','cucinavate la cena per tutta la famiglia','cucinavano la cena per tutta la famiglia'],
+      futuro:      ['cucinerò la cena per tutta la famiglia','cucinerai la cena per tutta la famiglia','cucinerà la cena per tutta la famiglia','cucineremo la cena per tutta la famiglia','cucinerete la cena per tutta la famiglia','cucineranno la cena per tutta la famiglia'],
+      congiuntivo: ['cucini la cena per tutta la famiglia','cucini la cena per tutta la famiglia','cucini la cena per tutta la famiglia','cuciniamo la cena per tutta la famiglia','cucinate la cena per tutta la famiglia','cucinino la cena per tutta la famiglia'],
+    },
+    conjs_es:{
+      presente:    ['hago la cena para toda la familia','haces la cena para toda la familia','hace la cena para toda la familia','hacemos la cena para toda la familia','hacéis la cena para toda la familia','hacen la cena para toda la familia'],
+      passato:     ['hice la cena para toda la familia','hiciste la cena para toda la familia','hizo la cena para toda la familia','hicimos la cena para toda la familia','hicisteis la cena para toda la familia','hicieron la cena para toda la familia'],
+      imperfetto:  ['hacía la cena para toda la familia','hacías la cena para toda la familia','hacía la cena para toda la familia','hacíamos la cena para toda la familia','hacíais la cena para toda la familia','hacían la cena para toda la familia'],
+      futuro:      ['haré la cena para toda la familia','harás la cena para toda la familia','hará la cena para toda la familia','haremos la cena para toda la familia','haréis la cena para toda la familia','harán la cena para toda la familia'],
+      congiuntivo: ['haga la cena para toda la familia','hagas la cena para toda la familia','haga la cena para toda la familia','hagamos la cena para toda la familia','hagáis la cena para toda la familia','hagan la cena para toda la familia'],
+    }
+  },
+  {
+    base_it:'chiamare mia madre nel fine settimana', base_es:'llamar a mi mamá el fin de semana',
+    vocab_it:'chiamare la mamma', vocab_es:'llamar a la mamá',
+    conjs_it:{
+      presente:    ['chiamo mia madre nel fine settimana','chiami tua madre nel fine settimana','chiama sua madre nel fine settimana','chiamiamo nostra madre nel fine settimana','chiamate vostra madre nel fine settimana','chiamano la loro madre nel fine settimana'],
+      passato:     ['ho chiamato mia madre nel fine settimana','hai chiamato tua madre nel fine settimana','ha chiamato sua madre nel fine settimana','abbiamo chiamato nostra madre nel fine settimana','avete chiamato vostra madre nel fine settimana','hanno chiamato la loro madre nel fine settimana'],
+      imperfetto:  ['chiamavo mia madre ogni fine settimana','chiamavi tua madre ogni fine settimana','chiamava sua madre ogni fine settimana','chiamavamo nostra madre ogni fine settimana','chiamavate vostra madre ogni fine settimana','chiamavano la loro madre ogni fine settimana'],
+      futuro:      ['chiamerò mia madre questo fine settimana','chiamerai tua madre questo fine settimana','chiamerà sua madre questo fine settimana','chiameremo nostra madre questo fine settimana','chiamerete vostra madre questo fine settimana','chiameranno la loro madre questo fine settimana'],
+      congiuntivo: ['chiami mia madre questo fine settimana','chiami tua madre questo fine settimana','chiami sua madre questo fine settimana','chiamiamo nostra madre questo fine settimana','chiamiate vostra madre questo fine settimana','chiamino la loro madre questo fine settimana'],
+    },
+    conjs_es:{
+      presente:    ['llamo a mi mamá el fin de semana','llamas a tu mamá el fin de semana','llama a su mamá el fin de semana','llamamos a nuestra mamá el fin de semana','llamáis a vuestra mamá el fin de semana','llaman a su mamá el fin de semana'],
+      passato:     ['llamé a mi mamá el fin de semana','llamaste a tu mamá el fin de semana','llamó a su mamá el fin de semana','llamamos a nuestra mamá el fin de semana','llamasteis a vuestra mamá el fin de semana','llamaron a su mamá el fin de semana'],
+      imperfetto:  ['llamaba a mi mamá todos los fines de semana','llamabas a tu mamá todos los fines de semana','llamaba a su mamá todos los fines de semana','llamábamos a nuestra mamá todos los fines de semana','llamabais a vuestra mamá todos los fines de semana','llamaban a su mamá todos los fines de semana'],
+      futuro:      ['llamaré a mi mamá este fin de semana','llamarás a tu mamá este fin de semana','llamará a su mamá este fin de semana','llamaremos a nuestra mamá este fin de semana','llamaréis a vuestra mamá este fin de semana','llamarán a su mamá este fin de semana'],
+      congiuntivo: ['llame a mi mamá este fin de semana','llames a tu mamá este fin de semana','llame a su mamá este fin de semana','llamemos a nuestra mamá este fin de semana','llaméis a vuestra mamá este fin de semana','llamen a su mamá este fin de semana'],
+    }
+  },
+  {
+    base_it:'ordinare un caffè e sedersi a lavorare', base_es:'pedir un café y sentarse a trabajar',
+    vocab_it:'ordinare un caffè', vocab_es:'pedir un café',
+    conjs_it:{
+      presente:    ['ordino un caffè e mi siedo a lavorare','ordini un caffè e ti siedi a lavorare','ordina un caffè e si siede a lavorare','ordiniamo un caffè e ci sediamo a lavorare','ordinate un caffè e vi sedete a lavorare','ordinano un caffè e si siedono a lavorare'],
+      passato:     ['ho ordinato un caffè e mi sono seduto a lavorare','hai ordinato un caffè e ti sei seduto a lavorare','ha ordinato un caffè e si è seduto a lavorare','abbiamo ordinato un caffè e ci siamo seduti a lavorare','avete ordinato un caffè e vi siete seduti a lavorare','hanno ordinato un caffè e si sono seduti a lavorare'],
+      imperfetto:  ['ordinavo un caffè e mi sedevo a lavorare','ordinavi un caffè e ti sedevi a lavorare','ordinava un caffè e si sedeva a lavorare','ordinavamo un caffè e ci sedevamo a lavorare','ordinavate un caffè e vi sedevate a lavorare','ordinavano un caffè e si sedevano a lavorare'],
+      futuro:      ['ordinerò un caffè e mi siederò a lavorare','ordinerai un caffè e ti siederai a lavorare','ordinerà un caffè e si siederà a lavorare','ordineremo un caffè e ci siederemo a lavorare','ordinerete un caffè e vi siederete a lavorare','ordineranno un caffè e si siederanno a lavorare'],
+      congiuntivo: ['ordini un caffè e si sieda a lavorare','ordini un caffè e ti sieda a lavorare','ordini un caffè e si sieda a lavorare','ordiniamo un caffè e ci sediamo a lavorare','ordiniate un caffè e vi siediate a lavorare','ordinino un caffè e si siedano a lavorare'],
+    },
+    conjs_es:{
+      presente:    ['pido un café y me siento a trabajar','pides un café y te sientas a trabajar','pide un café y se sienta a trabajar','pedimos un café y nos sentamos a trabajar','pedís un café y os sentáis a trabajar','piden un café y se sientan a trabajar'],
+      passato:     ['pedí un café y me senté a trabajar','pediste un café y te sentaste a trabajar','pidió un café y se sentó a trabajar','pedimos un café y nos sentamos a trabajar','pedisteis un café y os sentasteis a trabajar','pidieron un café y se sentaron a trabajar'],
+      imperfetto:  ['pedía un café y me sentaba a trabajar','pedías un café y te sentabas a trabajar','pedía un café y se sentaba a trabajar','pedíamos un café y nos sentábamos a trabajar','pedíais un café y os sentabais a trabajar','pedían un café y se sentaban a trabajar'],
+      futuro:      ['pediré un café y me sentaré a trabajar','pedirás un café y te sentarás a trabajar','pedirá un café y se sentará a trabajar','pediremos un café y nos sentaremos a trabajar','pediréis un café y os sentaréis a trabajar','pedirán un café y se sentarán a trabajar'],
+      congiuntivo: ['pida un café y se siente a trabajar','pidas un café y te sientes a trabajar','pida un café y se siente a trabajar','pidamos un café y nos sentemos a trabajar','pidáis un café y os sentéis a trabajar','pidan un café y se sienten a trabajar'],
+    }
+  },
+  {
+    base_it:'uscire con gli amici il venerdì sera', base_es:'salir con amigos el viernes por la noche',
+    vocab_it:'uscire con gli amici', vocab_es:'salir con amigos',
+    conjs_it:{
+      presente:    ['esco con gli amici il venerdì sera','esci con gli amici il venerdì sera','esce con gli amici il venerdì sera','usciamo con gli amici il venerdì sera','uscite con gli amici il venerdì sera','escono con gli amici il venerdì sera'],
+      passato:     ['sono uscito con gli amici venerdì sera','sei uscito con gli amici venerdì sera','è uscito con gli amici venerdì sera','siamo usciti con gli amici venerdì sera','siete usciti con gli amici venerdì sera','sono usciti con gli amici venerdì sera'],
+      imperfetto:  ['uscivo con gli amici ogni venerdì sera','uscivi con gli amici ogni venerdì sera','usciva con gli amici ogni venerdì sera','uscivamo con gli amici ogni venerdì sera','uscivate con gli amici ogni venerdì sera','uscivano con gli amici ogni venerdì sera'],
+      futuro:      ['uscirò con gli amici questo venerdì sera','uscirai con gli amici questo venerdì sera','uscirà con gli amici questo venerdì sera','usciremo con gli amici questo venerdì sera','uscirete con gli amici questo venerdì sera','usciranno con gli amici questo venerdì sera'],
+      congiuntivo: ['esca con gli amici questa sera','esca con gli amici questa sera','esca con gli amici questa sera','usciamo con gli amici questa sera','usciate con gli amici questa sera','escano con gli amici questa sera'],
+    },
+    conjs_es:{
+      presente:    ['salgo con amigos el viernes por la noche','sales con amigos el viernes por la noche','sale con amigos el viernes por la noche','salimos con amigos el viernes por la noche','salís con amigos el viernes por la noche','salen con amigos el viernes por la noche'],
+      passato:     ['salí con amigos el viernes por la noche','saliste con amigos el viernes por la noche','salió con amigos el viernes por la noche','salimos con amigos el viernes por la noche','salisteis con amigos el viernes por la noche','salieron con amigos el viernes por la noche'],
+      imperfetto:  ['salía con amigos todos los viernes','salías con amigos todos los viernes','salía con amigos todos los viernes','salíamos con amigos todos los viernes','salíais con amigos todos los viernes','salían con amigos todos los viernes'],
+      futuro:      ['saldré con amigos este viernes por la noche','saldrás con amigos este viernes por la noche','saldrá con amigos este viernes por la noche','saldremos con amigos este viernes por la noche','saldréis con amigos este viernes por la noche','saldrán con amigos este viernes por la noche'],
+      congiuntivo: ['salga con amigos esta noche','salgas con amigos esta noche','salga con amigos esta noche','salgamos con amigos esta noche','salgáis con amigos esta noche','salgan con amigos esta noche'],
+    }
+  },
+  {
+    base_it:'avere una riunione molto lunga stamattina', base_es:'tener una reunión muy larga esta mañana',
+    vocab_it:'avere una riunione', vocab_es:'tener una reunión',
+    conjs_it:{
+      presente:    ['ho una riunione molto lunga stamattina','hai una riunione molto lunga stamattina','ha una riunione molto lunga stamattina','abbiamo una riunione molto lunga stamattina','avete una riunione molto lunga stamattina','hanno una riunione molto lunga stamattina'],
+      passato:     ['ho avuto una riunione molto lunga stamattina','hai avuto una riunione molto lunga stamattina','ha avuto una riunione molto lunga stamattina','abbiamo avuto una riunione molto lunga stamattina','avete avuto una riunione molto lunga stamattina','hanno avuto una riunione molto lunga stamattina'],
+      imperfetto:  ['avevo riunioni molto lunghe quasi ogni giorno','avevi riunioni molto lunghe quasi ogni giorno','aveva riunioni molto lunghe quasi ogni giorno','avevamo riunioni molto lunghe quasi ogni giorno','avevate riunioni molto lunghe quasi ogni giorno','avevano riunioni molto lunghe quasi ogni giorno'],
+      futuro:      ['avrò una riunione molto lunga domani mattina','avrai una riunione molto lunga domani mattina','avrà una riunione molto lunga domani mattina','avremo una riunione molto lunga domani mattina','avrete una riunione molto lunga domani mattina','avranno una riunione molto lunga domani mattina'],
+      congiuntivo: ['abbia una riunione che non duri troppo','abbia una riunione che non duri troppo','abbia una riunione che non duri troppo','abbiamo una riunione che non duri troppo','abbiate una riunione che non duri troppo','abbiano una riunione che non duri troppo'],
+    },
+    conjs_es:{
+      presente:    ['tengo una reunión muy larga esta mañana','tienes una reunión muy larga esta mañana','tiene una reunión muy larga esta mañana','tenemos una reunión muy larga esta mañana','tenéis una reunión muy larga esta mañana','tienen una reunión muy larga esta mañana'],
+      passato:     ['tuve una reunión muy larga esta mañana','tuviste una reunión muy larga esta mañana','tuvo una reunión muy larga esta mañana','tuvimos una reunión muy larga esta mañana','tuvisteis una reunión muy larga esta mañana','tuvieron una reunión muy larga esta mañana'],
+      imperfetto:  ['tenía reuniones muy largas casi todos los días','tenías reuniones muy largas casi todos los días','tenía reuniones muy largas casi todos los días','teníamos reuniones muy largas casi todos los días','teníais reuniones muy largas casi todos los días','tenían reuniones muy largas casi todos los días'],
+      futuro:      ['tendré una reunión muy larga mañana por la mañana','tendrás una reunión muy larga mañana por la mañana','tendrá una reunión muy larga mañana por la mañana','tendremos una reunión muy larga mañana por la mañana','tendréis una reunión muy larga mañana por la mañana','tendrán una reunión muy larga mañana por la mañana'],
+      congiuntivo: ['tenga una reunión que no dure tanto','tengas una reunión que no dure tanto','tenga una reunión que no dure tanto','tengamos una reunión que no dure tanto','tengáis una reunión que no dure tanto','tengan una reunión que no dure tanto'],
+    }
+  },
+  {
+    base_it:'finire il progetto prima della scadenza', base_es:'terminar el proyecto antes de la fecha límite',
+    vocab_it:'finire il progetto', vocab_es:'terminar el proyecto',
+    conjs_it:{
+      presente:    ['finisco il progetto prima della scadenza','finisci il progetto prima della scadenza','finisce il progetto prima della scadenza','finiamo il progetto prima della scadenza','finite il progetto prima della scadenza','finiscono il progetto prima della scadenza'],
+      passato:     ['ho finito il progetto appena prima della scadenza','hai finito il progetto appena prima della scadenza','ha finito il progetto appena prima della scadenza','abbiamo finito il progetto appena prima della scadenza','avete finito il progetto appena prima della scadenza','hanno finito il progetto appena prima della scadenza'],
+      imperfetto:  ['finivo sempre i progetti prima della scadenza','finivi sempre i progetti prima della scadenza','finiva sempre i progetti prima della scadenza','finivamo sempre i progetti prima della scadenza','finivate sempre i progetti prima della scadenza','finivano sempre i progetti prima della scadenza'],
+      futuro:      ['finirò il progetto prima che scada il termine','finirai il progetto prima che scada il termine','finirà il progetto prima che scada il termine','finiremo il progetto prima che scada il termine','finirete il progetto prima che scada il termine','finiranno il progetto prima che scada il termine'],
+      congiuntivo: ['finisca il progetto prima della scadenza','finisca il progetto prima della scadenza','finisca il progetto prima della scadenza','finiamo il progetto prima della scadenza','finiate il progetto prima della scadenza','finiscano il progetto prima della scadenza'],
+    },
+    conjs_es:{
+      presente:    ['termino el proyecto antes de la fecha límite','terminas el proyecto antes de la fecha límite','termina el proyecto antes de la fecha límite','terminamos el proyecto antes de la fecha límite','termináis el proyecto antes de la fecha límite','terminan el proyecto antes de la fecha límite'],
+      passato:     ['terminé el proyecto justo antes de la fecha límite','terminaste el proyecto justo antes de la fecha límite','terminó el proyecto justo antes de la fecha límite','terminamos el proyecto justo antes de la fecha límite','terminasteis el proyecto justo antes de la fecha límite','terminaron el proyecto justo antes de la fecha límite'],
+      imperfetto:  ['terminaba los proyectos siempre antes de la fecha límite','terminabas los proyectos siempre antes de la fecha límite','terminaba los proyectos siempre antes de la fecha límite','terminábamos los proyectos siempre antes de la fecha límite','terminabais los proyectos siempre antes de la fecha límite','terminaban los proyectos siempre antes de la fecha límite'],
+      futuro:      ['terminaré el proyecto antes de que venza el plazo','terminarás el proyecto antes de que venza el plazo','terminará el proyecto antes de que venza el plazo','terminaremos el proyecto antes de que venza el plazo','terminaréis el proyecto antes de que venza el plazo','terminarán el proyecto antes de que venza el plazo'],
+      congiuntivo: ['termine el proyecto antes de la fecha límite','termines el proyecto antes de la fecha límite','termine el proyecto antes de la fecha límite','terminemos el proyecto antes de la fecha límite','terminéis el proyecto antes de la fecha límite','terminen el proyecto antes de la fecha límite'],
+    }
+  },
+  {
+    base_it:'sentirsi molto stanco dopo una settimana lunga', base_es:'sentirse muy cansado después de una semana larga',
+    vocab_it:'sentirsi stanco', vocab_es:'sentirse cansado',
+    conjs_it:{
+      presente:    ['mi sento molto stanco dopo una settimana lunga','ti senti molto stanco dopo una settimana lunga','si sente molto stanco dopo una settimana lunga','ci sentiamo molto stanchi dopo una settimana lunga','vi sentite molto stanchi dopo una settimana lunga','si sentono molto stanchi dopo una settimana lunga'],
+      passato:     ['mi sono sentito molto stanco dopo quella settimana','ti sei sentito molto stanco dopo quella settimana','si è sentito molto stanco dopo quella settimana','ci siamo sentiti molto stanchi dopo quella settimana','vi siete sentiti molto stanchi dopo quella settimana','si sono sentiti molto stanchi dopo quella settimana'],
+      imperfetto:  ['mi sentivo molto stanco alla fine della settimana','ti sentivi molto stanco alla fine della settimana','si sentiva molto stanco alla fine della settimana','ci sentivamo molto stanchi alla fine della settimana','vi sentivate molto stanchi alla fine della settimana','si sentivano molto stanchi alla fine della settimana'],
+      futuro:      ['mi sentirò molto stanco dopo questo viaggio','ti sentirai molto stanco dopo questo viaggio','si sentirà molto stanco dopo questo viaggio','ci sentiremo molto stanchi dopo questo viaggio','vi sentirete molto stanchi dopo questo viaggio','si sentiranno molto stanchi dopo questo viaggio'],
+      congiuntivo: ['mi senta stanco anche se non voglio ammetterlo','ti senta stanco anche se non vuoi ammetterlo','si senta stanco anche se non vuole ammetterlo','ci sentiamo stanchi anche se non vogliamo ammetterlo','vi sentiate stanchi anche se non volete ammetterlo','si sentano stanchi anche se non vogliono ammetterlo'],
+    },
+    conjs_es:{
+      presente:    ['me siento muy cansado después de una semana larga','te sientes muy cansado después de una semana larga','se siente muy cansado después de una semana larga','nos sentimos muy cansados después de una semana larga','os sentís muy cansados después de una semana larga','se sienten muy cansados después de una semana larga'],
+      passato:     ['me sentí muy cansado después de esa semana','te sentiste muy cansado después de esa semana','se sintió muy cansado después de esa semana','nos sentimos muy cansados después de esa semana','os sentisteis muy cansados después de esa semana','se sintieron muy cansados después de esa semana'],
+      imperfetto:  ['me sentía muy cansado al final de la semana','te sentías muy cansado al final de la semana','se sentía muy cansado al final de la semana','nos sentíamos muy cansados al final de la semana','os sentíais muy cansados al final de la semana','se sentían muy cansados al final de la semana'],
+      futuro:      ['me sentiré muy cansado después de este viaje','te sentirás muy cansado después de este viaje','se sentirá muy cansado después de este viaje','nos sentiremos muy cansados después de este viaje','os sentiréis muy cansados después de este viaje','se sentirán muy cansados después de este viaje'],
+      congiuntivo: ['me sienta cansado aunque no quiera admitirlo','te sientas cansado aunque no quieras admitirlo','se sienta cansado aunque no quiera admitirlo','nos sintamos cansados aunque no queramos admitirlo','os sintáis cansados aunque no queráis admitirlo','se sientan cansados aunque no quieran admitirlo'],
+    }
+  },
+  {
+    base_it:'essere nervoso per qualcosa di importante', base_es:'estar nervioso por algo importante',
+    vocab_it:'essere nervoso', vocab_es:'estar nervioso',
+    conjs_it:{
+      presente:    ['sono nervoso per qualcosa di importante','sei nervoso per qualcosa di importante','è nervoso per qualcosa di importante','siamo nervosi per qualcosa di importante','siete nervosi per qualcosa di importante','sono nervosi per qualcosa di importante'],
+      passato:     ['sono stato nervoso tutta la mattina','sei stato nervoso tutta la mattina','è stato nervoso tutta la mattina','siamo stati nervosi tutta la mattina','siete stati nervosi tutta la mattina','sono stati nervosi tutta la mattina'],
+      imperfetto:  ['ero nervoso prima di ogni presentazione','eri nervoso prima di ogni presentazione','era nervoso prima di ogni presentazione','eravamo nervosi prima di ogni presentazione','eravate nervosi prima di ogni presentazione','erano nervosi prima di ogni presentazione'],
+      futuro:      ['sarò nervoso finché non saprò il risultato','sarai nervoso finché non saprai il risultato','sarà nervoso finché non saprà il risultato','saremo nervosi finché non sapremo il risultato','sarete nervosi finché non saprete il risultato','saranno nervosi finché non sapranno il risultato'],
+      congiuntivo: ['sia nervoso anche se non c\'è motivo','sia nervoso anche se non c\'è motivo','sia nervoso anche se non c\'è motivo','siamo nervosi anche se non c\'è motivo','siate nervosi anche se non c\'è motivo','siano nervosi anche se non c\'è motivo'],
+    },
+    conjs_es:{
+      presente:    ['estoy nervioso por algo importante','estás nervioso por algo importante','está nervioso por algo importante','estamos nerviosos por algo importante','estáis nerviosos por algo importante','están nerviosos por algo importante'],
+      passato:     ['estuve nervioso toda la mañana','estuviste nervioso toda la mañana','estuvo nervioso toda la mañana','estuvimos nerviosos toda la mañana','estuvisteis nerviosos toda la mañana','estuvieron nerviosos toda la mañana'],
+      imperfetto:  ['estaba nervioso antes de cada presentación','estabas nervioso antes de cada presentación','estaba nervioso antes de cada presentación','estábamos nerviosos antes de cada presentación','estabais nerviosos antes de cada presentación','estaban nerviosos antes de cada presentación'],
+      futuro:      ['estaré nervioso hasta que sepa el resultado','estarás nervioso hasta que sepas el resultado','estará nervioso hasta que sepa el resultado','estaremos nerviosos hasta que sepamos el resultado','estaréis nerviosos hasta que sepáis el resultado','estarán nerviosos hasta que sepan el resultado'],
+      congiuntivo: ['esté nervioso aunque no haya razón','estés nervioso aunque no haya razón','esté nervioso aunque no haya razón','estemos nerviosos aunque no haya razón','estéis nerviosos aunque no haya razón','estén nerviosos aunque no haya razón'],
+    }
+  },
+  {
+    base_it:'poter gestire la situazione con calma', base_es:'poder manejar la situación con calma',
+    vocab_it:'gestire la situazione', vocab_es:'manejar la situación',
+    conjs_it:{
+      presente:    ['posso gestire la situazione con calma','puoi gestire la situazione con calma','può gestire la situazione con calma','possiamo gestire la situazione con calma','potete gestire la situazione con calma','possono gestire la situazione con calma'],
+      passato:     ['ho potuto gestire la situazione con calma','hai potuto gestire la situazione con calma','ha potuto gestire la situazione con calma','abbiamo potuto gestire la situazione con calma','avete potuto gestire la situazione con calma','hanno potuto gestire la situazione con calma'],
+      imperfetto:  ['potevo gestire qualsiasi situazione con calma','potevi gestire qualsiasi situazione con calma','poteva gestire qualsiasi situazione con calma','potevamo gestire qualsiasi situazione con calma','potevate gestire qualsiasi situazione con calma','potevano gestire qualsiasi situazione con calma'],
+      futuro:      ['potrò gestire la situazione quando arriverà il momento','potrai gestire la situazione quando arriverà il momento','potrà gestire la situazione quando arriverà il momento','potremo gestire la situazione quando arriverà il momento','potrete gestire la situazione quando arriverà il momento','potranno gestire la situazione quando arriverà il momento'],
+      congiuntivo: ['possa gestire la situazione senza perdere la calma','possa gestire la situazione senza perdere la calma','possa gestire la situazione senza perdere la calma','possiamo gestire la situazione senza perdere la calma','possiate gestire la situazione senza perdere la calma','possano gestire la situazione senza perdere la calma'],
+    },
+    conjs_es:{
+      presente:    ['puedo manejar la situación con calma','puedes manejar la situación con calma','puede manejar la situación con calma','podemos manejar la situación con calma','podéis manejar la situación con calma','pueden manejar la situación con calma'],
+      passato:     ['pude manejar la situación con calma','pudiste manejar la situación con calma','pudo manejar la situación con calma','pudimos manejar la situación con calma','pudisteis manejar la situación con calma','pudieron manejar la situación con calma'],
+      imperfetto:  ['podía manejar cualquier situación con calma','podías manejar cualquier situación con calma','podía manejar cualquier situación con calma','podíamos manejar cualquier situación con calma','podíais manejar cualquier situación con calma','podían manejar cualquier situación con calma'],
+      futuro:      ['podré manejar la situación cuando llegue el momento','podrás manejar la situación cuando llegue el momento','podrá manejar la situación cuando llegue el momento','podremos manejar la situación cuando llegue el momento','podréis manejar la situación cuando llegue el momento','podrán manejar la situación cuando llegue el momento'],
+      congiuntivo: ['pueda manejar la situación sin perder la calma','puedas manejar la situación sin perder la calma','pueda manejar la situación sin perder la calma','podamos manejar la situación sin perder la calma','podáis manejar la situación sin perder la calma','puedan manejar la situación sin perder la calma'],
+    }
+  },
+  {
+    base_it:'voler dormire per tutto un giorno intero', base_es:'querer dormir todo un día entero',
+    vocab_it:'voler dormire', vocab_es:'querer dormir',
+    conjs_it:{
+      presente:    ['voglio dormire per tutto un giorno intero','vuoi dormire per tutto un giorno intero','vuole dormire per tutto un giorno intero','vogliamo dormire per tutto un giorno intero','volete dormire per tutto un giorno intero','vogliono dormire per tutto un giorno intero'],
+      passato:     ['ho voluto dormire tutto il giorno dopo il viaggio','hai voluto dormire tutto il giorno dopo il viaggio','ha voluto dormire tutto il giorno dopo il viaggio','abbiamo voluto dormire tutto il giorno dopo il viaggio','avete voluto dormire tutto il giorno dopo il viaggio','hanno voluto dormire tutto il giorno dopo il viaggio'],
+      imperfetto:  ['volevo dormire di più nei fine settimana','volevi dormire di più nei fine settimana','voleva dormire di più nei fine settimana','volevamo dormire di più nei fine settimana','volevate dormire di più nei fine settimana','volevano dormire di più nei fine settimana'],
+      futuro:      ['vorrò dormire tutto il giorno quando finirò questo progetto','vorrai dormire tutto il giorno quando finirai questo progetto','vorrà dormire tutto il giorno quando finirà questo progetto','vorremo dormire tutto il giorno quando finiremo questo progetto','vorrete dormire tutto il giorno quando finirete questo progetto','vorranno dormire tutto il giorno quando finiranno questo progetto'],
+      congiuntivo: ['voglia dormire un po\' prima di uscire','voglia dormire un po\' prima di uscire','voglia dormire un po\' prima di uscire','vogliamo dormire un po\' prima di uscire','vogliate dormire un po\' prima di uscire','vogliano dormire un po\' prima di uscire'],
+    },
+    conjs_es:{
+      presente:    ['quiero dormir todo un día entero','quieres dormir todo un día entero','quiere dormir todo un día entero','queremos dormir todo un día entero','queréis dormir todo un día entero','quieren dormir todo un día entero'],
+      passato:     ['quise dormir todo el día después del viaje','quisiste dormir todo el día después del viaje','quiso dormir todo el día después del viaje','quisimos dormir todo el día después del viaje','quisisteis dormir todo el día después del viaje','quisieron dormir todo el día después del viaje'],
+      imperfetto:  ['quería dormir más los fines de semana','querías dormir más los fines de semana','quería dormir más los fines de semana','queríamos dormir más los fines de semana','queríais dormir más los fines de semana','querían dormir más los fines de semana'],
+      futuro:      ['querré dormir todo el día cuando termine este proyecto','querrás dormir todo el día cuando termines este proyecto','querrá dormir todo el día cuando termine este proyecto','querremos dormir todo el día cuando terminemos este proyecto','querréis dormir todo el día cuando terminéis este proyecto','querrán dormir todo el día cuando terminen este proyecto'],
+      congiuntivo: ['quiera dormir un poco antes de salir','quieras dormir un poco antes de salir','quiera dormir un poco antes de salir','queramos dormir un poco antes de salir','queráis dormir un poco antes de salir','quieran dormir un poco antes de salir'],
+    }
+  },
+  {
+    base_it:'dover partire subito o perdere il treno', base_es:'tener que salir ahora mismo o perder el tren',
+    vocab_it:'dover partire subito', vocab_es:'tener que salir ahora',
+    conjs_it:{
+      presente:    ['devo partire subito o perdo il treno','devi partire subito o perdi il treno','deve partire subito o perde il treno','dobbiamo partire subito o perdiamo il treno','dovete partire subito o perdete il treno','devono partire subito o perdono il treno'],
+      passato:     ['ho dovuto correre per non perdere il treno','hai dovuto correre per non perdere il treno','ha dovuto correre per non perdere il treno','abbiamo dovuto correre per non perdere il treno','avete dovuto correre per non perdere il treno','hanno dovuto correre per non perdere il treno'],
+      imperfetto:  ['dovevo partire presto per non perdere il treno','dovevi partire presto per non perdere il treno','doveva partire presto per non perdere il treno','dovevamo partire presto per non perdere il treno','dovevate partire presto per non perdere il treno','dovevano partire presto per non perdere il treno'],
+      futuro:      ['dovrò partire prima delle otto per arrivare in tempo','dovrai partire prima delle otto per arrivare in tempo','dovrà partire prima delle otto per arrivare in tempo','dovremo partire prima delle otto per arrivare in tempo','dovrete partire prima delle otto per arrivare in tempo','dovranno partire prima delle otto per arrivare in tempo'],
+      congiuntivo: ['debba partire senza fare colazione','debba partire senza fare colazione','debba partire senza fare colazione','dobbiamo partire senza fare colazione','dobbiate partire senza fare colazione','debbano partire senza fare colazione'],
+    },
+    conjs_es:{
+      presente:    ['tengo que salir ahora mismo o pierdo el tren','tienes que salir ahora mismo o pierdes el tren','tiene que salir ahora mismo o pierde el tren','tenemos que salir ahora mismo o perdemos el tren','tenéis que salir ahora mismo o perdéis el tren','tienen que salir ahora mismo o pierden el tren'],
+      passato:     ['tuve que correr para no perder el tren','tuviste que correr para no perder el tren','tuvo que correr para no perder el tren','tuvimos que correr para no perder el tren','tuvisteis que correr para no perder el tren','tuvieron que correr para no perder el tren'],
+      imperfetto:  ['tenía que salir temprano para no perder el tren','tenías que salir temprano para no perder el tren','tenía que salir temprano para no perder el tren','teníamos que salir temprano para no perder el tren','teníais que salir temprano para no perder el tren','tenían que salir temprano para no perder el tren'],
+      futuro:      ['tendré que salir antes de las ocho para llegar a tiempo','tendrás que salir antes de las ocho para llegar a tiempo','tendrá que salir antes de las ocho para llegar a tiempo','tendremos que salir antes de las ocho para llegar a tiempo','tendréis que salir antes de las ocho para llegar a tiempo','tendrán que salir antes de las ocho para llegar a tiempo'],
+      congiuntivo: ['tenga que salir sin desayunar','tengas que salir sin desayunar','tenga que salir sin desayunar','tengamos que salir sin desayunar','tengáis que salir sin desayunar','tengan que salir sin desayunar'],
+    }
+  },
+  {
+    base_it:'sapere cucinare alcuni piatti buoni', base_es:'saber cocinar algunos platos buenos',
+    vocab_it:'sapere cucinare', vocab_es:'saber cocinar',
+    conjs_it:{
+      presente:    ['so cucinare alcuni piatti buoni','sai cucinare alcuni piatti buoni','sa cucinare alcuni piatti buoni','sappiamo cucinare alcuni piatti buoni','sapete cucinare alcuni piatti buoni','sanno cucinare alcuni piatti buoni'],
+      passato:     ['ho saputo cucinare quel piatto la prima volta che ho provato','hai saputo cucinare quel piatto la prima volta che hai provato','ha saputo cucinare quel piatto la prima volta che ha provato','abbiamo saputo cucinare quel piatto la prima volta che abbiamo provato','avete saputo cucinare quel piatto la prima volta che avete provato','hanno saputo cucinare quel piatto la prima volta che hanno provato'],
+      imperfetto:  ['sapevo cucinare da quando ero giovane','sapevi cucinare da quando eri giovane','sapeva cucinare da quando era giovane','sapevamo cucinare da quando eravamo giovani','sapevate cucinare da quando eravate giovani','sapevano cucinare da quando erano giovani'],
+      futuro:      ['saprò cucinare altri piatti quando prenderò lezioni','saprai cucinare altri piatti quando prenderai lezioni','saprà cucinare altri piatti quando prenderà lezioni','sapremo cucinare altri piatti quando prenderemo lezioni','saprete cucinare altri piatti quando prenderete lezioni','sapranno cucinare altri piatti quando prenderanno lezioni'],
+      congiuntivo: ['sappia cucinare almeno un piatto per fare colpo','sappia cucinare almeno un piatto per fare colpo','sappia cucinare almeno un piatto per fare colpo','sappiamo cucinare almeno un piatto per fare colpo','sappiate cucinare almeno un piatto per fare colpo','sappiano cucinare almeno un piatto per fare colpo'],
+    },
+    conjs_es:{
+      presente:    ['sé cocinar algunos platos buenos','sabes cocinar algunos platos buenos','sabe cocinar algunos platos buenos','sabemos cocinar algunos platos buenos','sabéis cocinar algunos platos buenos','saben cocinar algunos platos buenos'],
+      passato:     ['supe cocinar ese plato la primera vez que lo intenté','supiste cocinar ese plato la primera vez que lo intentaste','supo cocinar ese plato la primera vez que lo intentó','supimos cocinar ese plato la primera vez que lo intentamos','supisteis cocinar ese plato la primera vez que lo intentasteis','supieron cocinar ese plato la primera vez que lo intentaron'],
+      imperfetto:  ['sabía cocinar desde que era joven','sabías cocinar desde que eras joven','sabía cocinar desde que era joven','sabíamos cocinar desde que éramos jóvenes','sabíais cocinar desde que erais jóvenes','sabían cocinar desde que eran jóvenes'],
+      futuro:      ['sabré cocinar más platos cuando tome clases','sabrás cocinar más platos cuando tomes clases','sabrá cocinar más platos cuando tome clases','sabremos cocinar más platos cuando tomemos clases','sabréis cocinar más platos cuando toméis clases','sabrán cocinar más platos cuando tomen clases'],
+      congiuntivo: ['sepa cocinar al menos un plato para impresionar','sepas cocinar al menos un plato para impresionar','sepa cocinar al menos un plato para impresionar','sepamos cocinar al menos un plato para impresionar','sepáis cocinar al menos un plato para impresionar','sepan cocinar al menos un plato para impresionar'],
+    }
+  },
+  {
+    base_it:'dire la verità anche quando è scomodo', base_es:'decir la verdad aunque sea incómodo',
+    vocab_it:'dire la verità', vocab_es:'decir la verdad',
+    conjs_it:{
+      presente:    ['dico la verità anche quando è scomodo','dici la verità anche quando è scomodo','dice la verità anche quando è scomodo','diciamo la verità anche quando è scomodo','dite la verità anche quando è scomodo','dicono la verità anche quando è scomodo'],
+      passato:     ['ho detto la verità anche se sapevo che non sarebbe piaciuta','hai detto la verità anche se sapevi che non sarebbe piaciuta','ha detto la verità anche se sapeva che non sarebbe piaciuta','abbiamo detto la verità anche se sapevamo che non sarebbe piaciuta','avete detto la verità anche se sapevate che non sarebbe piaciuta','hanno detto la verità anche se sapevano che non sarebbe piaciuta'],
+      imperfetto:  ['dicevo la verità anche quando era difficile','dicevi la verità anche quando era difficile','diceva la verità anche quando era difficile','dicevamo la verità anche quando era difficile','dicevate la verità anche quando era difficile','dicevano la verità anche quando era difficile'],
+      futuro:      ['dirò la verità senza importare le conseguenze','dirai la verità senza importare le conseguenze','dirà la verità senza importare le conseguenze','diremo la verità senza importare le conseguenze','direte la verità senza importare le conseguenze','diranno la verità senza importare le conseguenze'],
+      congiuntivo: ['dica la verità prima che la situazione peggiori','dica la verità prima che la situazione peggiori','dica la verità prima che la situazione peggiori','diciamo la verità prima che la situazione peggiori','diciate la verità prima che la situazione peggiori','dicano la verità prima che la situazione peggiori'],
+    },
+    conjs_es:{
+      presente:    ['digo la verdad aunque sea incómodo','dices la verdad aunque sea incómodo','dice la verdad aunque sea incómodo','decimos la verdad aunque sea incómodo','decís la verdad aunque sea incómodo','dicen la verdad aunque sea incómodo'],
+      passato:     ['dije la verdad aunque sabía que no iba a gustar','dijiste la verdad aunque sabías que no iba a gustar','dijo la verdad aunque sabía que no iba a gustar','dijimos la verdad aunque sabíamos que no iba a gustar','dijisteis la verdad aunque sabíais que no iba a gustar','dijeron la verdad aunque sabían que no iba a gustar'],
+      imperfetto:  ['decía la verdad incluso cuando era difícil','decías la verdad incluso cuando era difícil','decía la verdad incluso cuando era difícil','decíamos la verdad incluso cuando era difícil','decíais la verdad incluso cuando era difícil','decían la verdad incluso cuando era difícil'],
+      futuro:      ['diré la verdad sin importar las consecuencias','dirás la verdad sin importar las consecuencias','dirá la verdad sin importar las consecuencias','diremos la verdad sin importar las consecuencias','diréis la verdad sin importar las consecuencias','dirán la verdad sin importar las consecuencias'],
+      congiuntivo: ['diga la verdad antes de que la situación empeore','digas la verdad antes de que la situación empeore','diga la verdad antes de que la situación empeore','digamos la verdad antes de que la situación empeore','digáis la verdad antes de que la situación empeore','digan la verdad antes de que la situación empeore'],
+    }
+  },
+  {
+    base_it:'arrabbiarsi quando le cose non vanno come previsto', base_es:'enojarse cuando las cosas no salen como uno quiere',
+    vocab_it:'arrabbiarsi', vocab_es:'enojarse',
+    conjs_it:{
+      presente:    ['mi arrabbio quando le cose non vanno come voglio','ti arrabbi quando le cose non vanno come vuoi','si arrabbia quando le cose non vanno come vuole','ci arrabbiamo quando le cose non vanno come vogliamo','vi arrabbiate quando le cose non vanno come volete','si arrabbiano quando le cose non vanno come vogliono'],
+      passato:     ['mi sono arrabbiato molto quando hanno cancellato il volo','ti sei arrabbiato molto quando hanno cancellato il volo','si è arrabbiato molto quando hanno cancellato il volo','ci siamo arrabbiati molto quando hanno cancellato il volo','vi siete arrabbiati molto quando hanno cancellato il volo','si sono arrabbiati molto quando hanno cancellato il volo'],
+      imperfetto:  ['mi arrabbiavo facilmente quando ero più giovane','ti arrabbiavi facilmente quando eri più giovane','si arrabbiava facilmente quando era più giovane','ci arrabbiavamo facilmente quando eravamo più giovani','vi arrabbiavate facilmente quando eravate più giovani','si arrabbiavano facilmente quando erano più giovani'],
+      futuro:      ['mi arrabbierò se arriva tardi di nuovo','ti arrabbierai se arriva tardi di nuovo','si arrabbierà se arriva tardi di nuovo','ci arrabbieremo se arrivano tardi di nuovo','vi arrabbierete se arrivate tardi di nuovo','si arrabbieranno se arrivano tardi di nuovo'],
+      congiuntivo: ['mi arrabbi anche se cerco di mantenere la calma','ti arrabbi anche se cerchi di mantenere la calma','si arrabbi anche se cerca di mantenere la calma','ci arrabbiamo anche se cerchiamo di mantenere la calma','vi arrabbiate anche se cercate di mantenere la calma','si arrabbino anche se cercano di mantenere la calma'],
+    },
+    conjs_es:{
+      presente:    ['me enojo cuando las cosas no salen como quiero','te enojas cuando las cosas no salen como quieres','se enoja cuando las cosas no salen como quiere','nos enojamos cuando las cosas no salen como queremos','os enojáis cuando las cosas no salen como queréis','se enojan cuando las cosas no salen como quieren'],
+      passato:     ['me enojé mucho cuando cancelaron el vuelo','te enojaste mucho cuando cancelaron el vuelo','se enojó mucho cuando cancelaron el vuelo','nos enojamos mucho cuando cancelaron el vuelo','os enojasteis mucho cuando cancelaron el vuelo','se enojaron mucho cuando cancelaron el vuelo'],
+      imperfetto:  ['me enojaba fácilmente cuando era más joven','te enojabas fácilmente cuando eras más joven','se enojaba fácilmente cuando era más joven','nos enojábamos fácilmente cuando éramos más jóvenes','os enojabais fácilmente cuando erais más jóvenes','se enojaban fácilmente cuando eran más jóvenes'],
+      futuro:      ['me enojaré si llega tarde otra vez','te enojarás si llega tarde otra vez','se enojará si llega tarde otra vez','nos enojaremos si llegan tarde otra vez','os enojaréis si llegáis tarde otra vez','se enojarán si llegan tarde otra vez'],
+      congiuntivo: ['me enoje aunque intente mantener la calma','te enojes aunque intentes mantener la calma','se enoje aunque intente mantener la calma','nos enojemos aunque intentemos mantener la calma','os enojéis aunque intentéis mantener la calma','se enojen aunque intenten mantener la calma'],
+    }
+  },
+  {
+    base_it:'continuare ad andare avanti anche quando è difficile', base_es:'seguir adelante aunque las cosas se pongan difíciles',
+    vocab_it:'andare avanti', vocab_es:'seguir adelante',
+    conjs_it:{
+      presente:    ['continuo ad andare avanti anche quando è difficile','continui ad andare avanti anche quando è difficile','continua ad andare avanti anche quando è difficile','continuiamo ad andare avanti anche quando è difficile','continuate ad andare avanti anche quando è difficile','continuano ad andare avanti anche quando è difficile'],
+      passato:     ['ho continuato ad andare avanti anche se è stato difficile all\'inizio','hai continuato ad andare avanti anche se è stato difficile all\'inizio','ha continuato ad andare avanti anche se è stato difficile all\'inizio','abbiamo continuato ad andare avanti anche se è stato difficile all\'inizio','avete continuato ad andare avanti anche se è stato difficile all\'inizio','hanno continuato ad andare avanti anche se è stato difficile all\'inizio'],
+      imperfetto:  ['continuavo ad andare avanti anche quando non ne avevo voglia','continuavi ad andare avanti anche quando non ne avevi voglia','continuava ad andare avanti anche quando non ne aveva voglia','continuavamo ad andare avanti anche quando non ne avevamo voglia','continuavate ad andare avanti anche quando non ne avevate voglia','continuavano ad andare avanti anche quando non ne avevano voglia'],
+      futuro:      ['continuerò ad andare avanti qualunque cosa succeda','continuerai ad andare avanti qualunque cosa succeda','continuerà ad andare avanti qualunque cosa succeda','continueremo ad andare avanti qualunque cosa succeda','continuerete ad andare avanti qualunque cosa succeda','continueranno ad andare avanti qualunque cosa succeda'],
+      congiuntivo: ['continui ad andare avanti anche se la strada è difficile','continui ad andare avanti anche se la strada è difficile','continui ad andare avanti anche se la strada è difficile','continuiamo ad andare avanti anche se la strada è difficile','continuiate ad andare avanti anche se la strada è difficile','continuino ad andare avanti anche se la strada è difficile'],
+    },
+    conjs_es:{
+      presente:    ['sigo adelante aunque las cosas se pongan difíciles','sigues adelante aunque las cosas se pongan difíciles','sigue adelante aunque las cosas se pongan difíciles','seguimos adelante aunque las cosas se pongan difíciles','seguís adelante aunque las cosas se pongan difíciles','siguen adelante aunque las cosas se pongan difíciles'],
+      passato:     ['seguí adelante aunque fue muy difícil al principio','seguiste adelante aunque fue muy difícil al principio','siguió adelante aunque fue muy difícil al principio','seguimos adelante aunque fue muy difícil al principio','seguisteis adelante aunque fue muy difícil al principio','siguieron adelante aunque fue muy difícil al principio'],
+      imperfetto:  ['seguía adelante aunque no tenía ganas de hacerlo','seguías adelante aunque no tenías ganas de hacerlo','seguía adelante aunque no tenía ganas de hacerlo','seguíamos adelante aunque no teníamos ganas de hacerlo','seguíais adelante aunque no teníais ganas de hacerlo','seguían adelante aunque no tenían ganas de hacerlo'],
+      futuro:      ['seguiré adelante sin importar lo que pase','seguirás adelante sin importar lo que pase','seguirá adelante sin importar lo que pase','seguiremos adelante sin importar lo que pase','seguiréis adelante sin importar lo que pase','seguirán adelante sin importar lo que pase'],
+      congiuntivo: ['siga adelante aunque el camino sea difícil','sigas adelante aunque el camino sea difícil','siga adelante aunque el camino sea difícil','sigamos adelante aunque el camino sea difícil','sigáis adelante aunque el camino sea difícil','sigan adelante aunque el camino sea difícil'],
+    }
+  },
+];
+
+// ── VOCABULARY: Italian → Spanish common words ──
+const VOCAB = [
+  {it:'la casa',es:'la casa',pos:'noun',ex_it:'La mia casa è al quarto piano.',ex_es:'Mi casa está en el cuarto piso.'},
+  {it:'il lavoro',es:'el trabajo',pos:'noun',ex_it:'Il lavoro inizia alle nove.',ex_es:'El trabajo empieza a las nueve.'},
+  {it:'mangiare',es:'comer',pos:'verb',ex_it:'Mangiamo insieme stasera.',ex_es:'Comemos juntos esta noche.'},
+  {it:'bere',es:'beber / tomar',pos:'verb',ex_it:'Voglio bere qualcosa di fresco.',ex_es:'Quiero beber algo fresco.'},
+  {it:'dormire',es:'dormir',pos:'verb',ex_it:'Non ho dormito bene ieri notte.',ex_es:'No dormí bien anoche.'},
+  {it:'parlare',es:'hablar',pos:'verb',ex_it:'Parli italiano molto bene.',ex_es:'Hablas italiano muy bien.'},
+  {it:'capire',es:'entender',pos:'verb',ex_it:'Non capisco cosa vuoi dire.',ex_es:'No entiendo lo que quieres decir.'},
+  {it:'sapere',es:'saber',pos:'verb',ex_it:'Sai dov\'è la stazione?',ex_es:'¿Sabes dónde está la estación?'},
+  {it:'volere',es:'querer',pos:'verb',ex_it:'Voglio andare al mare questo weekend.',ex_es:'Quiero ir al mar este fin de semana.'},
+  {it:'potere',es:'poder',pos:'verb',ex_it:'Puoi venire domani?',ex_es:'¿Puedes venir mañana?'},
+  {it:'dovere',es:'deber / tener que',pos:'verb',ex_it:'Devo studiare di più.',ex_es:'Debo estudiar más.'},
+  {it:'fare',es:'hacer',pos:'verb',ex_it:'Cosa stai facendo adesso?',ex_es:'¿Qué estás haciendo ahora?'},
+  {it:'andare',es:'ir',pos:'verb',ex_it:'Andiamo al cinema stasera?',ex_es:'¿Vamos al cine esta noche?'},
+  {it:'venire',es:'venir',pos:'verb',ex_it:'Vieni con noi alla festa?',ex_es:'¿Vienes con nosotros a la fiesta?'},
+  {it:'vedere',es:'ver',pos:'verb',ex_it:'L\'ho visto ieri in centro.',ex_es:'Lo vi ayer en el centro.'},
+  {it:'sentire',es:'sentir / oír',pos:'verb',ex_it:'Sento qualcosa di strano.',ex_es:'Oigo algo raro.'},
+  {it:'trovare',es:'encontrar',pos:'verb',ex_it:'Non riesco a trovare le chiavi.',ex_es:'No puedo encontrar las llaves.'},
+  {it:'portare',es:'llevar / traer',pos:'verb',ex_it:'Porta qualcosa da mangiare.',ex_es:'Trae algo para comer.'},
+  {it:'prendere',es:'tomar / coger',pos:'verb',ex_it:'Prendiamo il treno delle otto.',ex_es:'Tomamos el tren de las ocho.'},
+  {it:'dare',es:'dar',pos:'verb',ex_it:'Puoi darmi il tuo numero?',ex_es:'¿Puedes darme tu número?'},
+  {it:'stare',es:'estar',pos:'verb',ex_it:'Come stai oggi?',ex_es:'¿Cómo estás hoy?'},
+  {it:'essere',es:'ser / estar',pos:'verb',ex_it:'Siamo italiani ma viviamo a Madrid.',ex_es:'Somos italianos pero vivimos en Madrid.'},
+  {it:'avere',es:'tener',pos:'verb',ex_it:'Ho molta fame adesso.',ex_es:'Tengo mucha hambre ahora.'},
+  {it:'ancora',es:'todavía / aún',pos:'adverb',ex_it:'Non ho ancora finito.',ex_es:'Todavía no he terminado.'},
+  {it:'già',es:'ya',pos:'adverb',ex_it:'Ho già mangiato.',ex_es:'Ya comí.'},
+  {it:'sempre',es:'siempre',pos:'adverb',ex_it:'Arrivo sempre in ritardo.',ex_es:'Siempre llego tarde.'},
+  {it:'mai',es:'nunca / jamás',pos:'adverb',ex_it:'Non lo faccio mai.',ex_es:'Nunca lo hago.'},
+  {it:'spesso',es:'a menudo / frecuentemente',pos:'adverb',ex_it:'Vado spesso al mercato.',ex_es:'Voy al mercado a menudo.'},
+  {it:'subito',es:'enseguida / ahora mismo',pos:'adverb',ex_it:'Arrivo subito, aspettami.',ex_es:'Llego enseguida, espérame.'},
+  {it:'insieme',es:'juntos',pos:'adverb',ex_it:'Andiamo insieme al lavoro.',ex_es:'Vamos juntos al trabajo.'},
+  {it:'presto',es:'temprano / pronto',pos:'adverb',ex_it:'Dobbiamo alzarci presto domani.',ex_es:'Debemos levantarnos temprano mañana.'},
+  {it:'tardi',es:'tarde',pos:'adverb',ex_it:'Oggi torno a casa tardi.',ex_es:'Hoy llego tarde a casa.'},
+  {it:'troppo',es:'demasiado',pos:'adverb',ex_it:'Hai speso troppo questo mese.',ex_es:'Has gastado demasiado este mes.'},
+  {it:'abbastanza',es:'bastante / suficiente',pos:'adverb',ex_it:'Non ho dormito abbastanza.',ex_es:'No he dormido suficiente.'},
+  {it:'anche',es:'también',pos:'adverb',ex_it:'Anche io voglio venire.',ex_es:'Yo también quiero venir.'},
+  {it:'però',es:'pero / sin embargo',pos:'conjunction',ex_it:'Mi piace però è troppo caro.',ex_es:'Me gusta pero es demasiado caro.'},
+  {it:'quindi',es:'entonces / así que',pos:'conjunction',ex_it:'Ero stanco quindi sono andato a letto.',ex_es:'Estaba cansado así que me fui a la cama.'},
+  {it:'se',es:'si',pos:'conjunction',ex_it:'Se vuoi venire, fammi sapere.',ex_es:'Si quieres venir, dímelo.'},
+  {it:'quando',es:'cuando',pos:'conjunction',ex_it:'Quando arrivi chiamami.',ex_es:'Cuando llegues llámame.'},
+  {it:'perché',es:'porque / por qué',pos:'conjunction',ex_it:'Perché non sei venuto ieri?',ex_es:'¿Por qué no viniste ayer?'},
+  {it:'come',es:'cómo / como',pos:'conjunction',ex_it:'Non so come spiegartelo.',ex_es:'No sé cómo explicártelo.'},
+  {it:'adesso',es:'ahora',pos:'adverb',ex_it:'Devo andare adesso.',ex_es:'Tengo que irme ahora.'},
+  {it:'il tempo',es:'el tiempo',pos:'noun',ex_it:'Non ho abbastanza tempo.',ex_es:'No tengo suficiente tiempo.'},
+  {it:'il posto',es:'el lugar / el sitio',pos:'noun',ex_it:'Questo è il posto perfetto.',ex_es:'Este es el lugar perfecto.'},
+  {it:'la gente',es:'la gente',pos:'noun',ex_it:'C\'era molta gente lì.',ex_es:'Había mucha gente allí.'},
+  {it:'la cosa',es:'la cosa',pos:'noun',ex_it:'La cosa più importante è la salute.',ex_es:'La cosa más importante es la salud.'},
+  {it:'il modo',es:'la manera / el modo',pos:'noun',ex_it:'Non mi piace il modo in cui parli.',ex_es:'No me gusta la manera en que hablas.'},
+  {it:'il giorno',es:'el día',pos:'noun',ex_it:'Ogni giorno imparo qualcosa di nuovo.',ex_es:'Cada día aprendo algo nuevo.'},
+  {it:'la settimana',es:'la semana',pos:'noun',ex_it:'La settimana prossima parto in vacanza.',ex_es:'La semana que viene me voy de vacaciones.'},
+  {it:'l\'anno',es:'el año',pos:'noun',ex_it:'Quest\'anno voglio imparare lo spagnolo.',ex_es:'Este año quiero aprender español.'},
+  {it:'il momento',es:'el momento',pos:'noun',ex_it:'Non è il momento giusto per parlarne.',ex_es:'No es el momento adecuado para hablar de eso.'},
+  {it:'il problema',es:'el problema',pos:'noun',ex_it:'C\'è un problema con la connessione.',ex_es:'Hay un problema con la conexión.'},
+  {it:'la risposta',es:'la respuesta',pos:'noun',ex_it:'Non conosco la risposta.',ex_es:'No conozco la respuesta.'},
+  {it:'il motivo',es:'el motivo / la razón',pos:'noun',ex_it:'Qual è il motivo del ritardo?',ex_es:'¿Cuál es el motivo del retraso?'},
+  {it:'il fine settimana',es:'el fin de semana',pos:'noun',ex_it:'Cosa fai questo fine settimana?',ex_es:'¿Qué haces este fin de semana?'},
+  {it:'la strada',es:'la calle / el camino',pos:'noun',ex_it:'Abito in questa strada da anni.',ex_es:'Vivo en esta calle desde hace años.'},
+  {it:'il negozio',es:'la tienda',pos:'noun',ex_it:'Il negozio chiude alle otto di sera.',ex_es:'La tienda cierra a las ocho de la noche.'},
+  {it:'il ristorante',es:'el restaurante',pos:'noun',ex_it:'Conosco un ottimo ristorante qui vicino.',ex_es:'Conozco un restaurante excelente aquí cerca.'},
+  {it:'bello / bella',es:'bonito / hermoso',pos:'adjective',ex_it:'Che bella giornata oggi!',ex_es:'¡Qué día tan bonito hoy!'},
+  {it:'brutto / brutta',es:'feo / malo',pos:'adjective',ex_it:'È stato un brutto momento.',ex_es:'Fue un mal momento.'},
+  {it:'grande',es:'grande / gran',pos:'adjective',ex_it:'Hanno una casa molto grande.',ex_es:'Tienen una casa muy grande.'},
+  {it:'piccolo / piccola',es:'pequeño',pos:'adjective',ex_it:'Il mio appartamento è piccolo ma carino.',ex_es:'Mi apartamento es pequeño pero bonito.'},
+  {it:'buono / buona',es:'bueno',pos:'adjective',ex_it:'Questa pizza è molto buona.',ex_es:'Esta pizza es muy buena.'},
+  {it:'cattivo / cattiva',es:'malo',pos:'adjective',ex_it:'Ha avuto una cattiva giornata.',ex_es:'Tuvo un mal día.'},
+  {it:'nuovo / nuova',es:'nuevo',pos:'adjective',ex_it:'Ho comprato un nuovo telefono.',ex_es:'Compré un teléfono nuevo.'},
+  {it:'vecchio / vecchia',es:'viejo / antiguo',pos:'adjective',ex_it:'È una vecchia tradizione di famiglia.',ex_es:'Es una vieja tradición familiar.'},
+  {it:'tanto / tanta',es:'mucho / tanto',pos:'adjective',ex_it:'Ho tanto lavoro da fare.',ex_es:'Tengo mucho trabajo que hacer.'},
+  {it:'poco / poca',es:'poco',pos:'adjective',ex_it:'Ho dormito poco stanotte.',ex_es:'He dormido poco esta noche.'},
+  {it:'davvero',es:'de verdad / realmente',pos:'adverb',ex_it:'Sei davvero sicuro di questo?',ex_es:'¿Estás de verdad seguro de esto?'},
+  {it:'forse',es:'quizás / tal vez',pos:'adverb',ex_it:'Forse vengo anch\'io stasera.',ex_es:'Quizás voy yo también esta noche.'},
+  {it:'quasi',es:'casi',pos:'adverb',ex_it:'Ho quasi finito il libro.',ex_es:'Casi he terminado el libro.'},
+  {it:'almeno',es:'al menos / por lo menos',pos:'adverb',ex_it:'Chiamami almeno una volta al giorno.',ex_es:'Llámame al menos una vez al día.'},
+  {it:'di solito',es:'normalmente / usualmente',pos:'phrase',ex_it:'Di solito mangio a casa.',ex_es:'Normalmente como en casa.'},
+  {it:'di nuovo',es:'de nuevo / otra vez',pos:'phrase',ex_it:'Non voglio farlo di nuovo.',ex_es:'No quiero hacerlo de nuevo.'},
+  {it:'per favore',es:'por favor',pos:'phrase',ex_it:'Puoi aiutarmi, per favore?',ex_es:'¿Puedes ayudarme, por favor?'},
+  {it:'prego',es:'de nada',pos:'phrase',ex_it:'— Grazie! — Prego!',ex_es:'— ¡Gracias! — ¡De nada!'},
+  {it:'mi dispiace',es:'lo siento',pos:'phrase',ex_it:'Mi dispiace tanto per quello che è successo.',ex_es:'Lo siento mucho por lo que pasó.'},
+  {it:'non importa',es:'no importa',pos:'phrase',ex_it:'Non importa, ci penso io.',ex_es:'No importa, yo me encargo.'},
+  {it:'hai ragione',es:'tienes razón',pos:'phrase',ex_it:'Hai ragione, avrei dovuto chiamare.',ex_es:'Tienes razón, debería haber llamado.'},
+  {it:'ho capito',es:'entendí / ya veo',pos:'phrase',ex_it:'Ho capito, grazie per la spiegazione.',ex_es:'Entendí, gracias por la explicación.'},
+];
+
+// ── STATE ──
+const SPEED_MAP = {1:0.35, 2:0.5, 3:0.7, 4:0.9, 5:1.1};
+const SPEED_LABEL = {1:'Very slow', 2:'Slow', 3:'Medium', 4:'Fast', 5:'Native'};
+function setAudioSpeed(val) {
+  state.audioRate = SPEED_MAP[val];
+  document.getElementById('speed-val').textContent = SPEED_LABEL[val];
+}
+
+let availableVoices = [];
+let selectedVoiceURI = null;
+function loadVoices() {
+  availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('it'));
+  const sel = document.getElementById('voice-select');
+  if (!sel) return;
+  sel.innerHTML = availableVoices.length
+    ? availableVoices.map((v,i) => `<option value="${v.voiceURI}">${v.name} (${v.lang})</option>`).join('')
+    : '<option>No Italian voices found — install in iOS Settings</option>';
+  if (availableVoices.length) selectedVoiceURI = availableVoices[0].voiceURI;
+  const premium = availableVoices.find(v => v.name.includes('Alice') || v.name.includes('Luca') || v.name.includes('enhanced') || v.name.includes('premium'));
+  if (premium) { selectedVoiceURI = premium.voiceURI; sel.value = premium.voiceURI; }
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+setTimeout(loadVoices, 500);
+function onVoiceChange(val) { selectedVoiceURI = val; }
+function getItalianVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  return voices.find(v => v.voiceURI === selectedVoiceURI) || voices.find(v => v.lang.startsWith('it')) || null;
+}
+
+let state = {
+  audioRate: 0.5,
+  fcGoal:30, vocGoal:20, audioGoal:10,
+  fcDone:0, vocDone:0, mastered:0, reviewing:0,
+  vocMastered:0, vocReviewing:0,
+  audMin:0, audMinTotal:0, audDrills:0,
+  activeTenses: new Set(['presente','passato','imperfetto','futuro','congiuntivo']),
+  fcQueue:[], fcIdx:0, fcGoalHit:false, fcFlipped:false,
+  vocQueue:[], vocIdx:0, vocGoalHit:false, vocFlipped:false,
+  playingKey:null, playingRow:-1, audInterval:null,
+};
+
+function storageKey() { return 'italiano_state_' + (currentProfile || 'bernardo'); }
+
+function saveState() {
+  try { localStorage.setItem(storageKey(), JSON.stringify({
+    fcDone:state.fcDone, vocDone:state.vocDone, mastered:state.mastered, reviewing:state.reviewing,
+    vocMastered:state.vocMastered, audMin:state.audMin, audMinTotal:state.audMinTotal, audDrills:state.audDrills,
+    fcGoal:state.fcGoal, vocGoal:state.vocGoal, audioGoal:state.audioGoal,
+    activeTenses:[...state.activeTenses], lastDate:new Date().toDateString(),
+  })); } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(storageKey()));
+    if (!s) return;
+    const isNewDay = s.lastDate !== new Date().toDateString();
+    if (isNewDay) {
+      state.fcDone=0; state.vocDone=0; state.mastered=0; state.reviewing=0; state.vocMastered=0; state.audMin=0; state.audDrills=0;
+    } else {
+      state.fcDone=s.fcDone||0; state.vocDone=s.vocDone||0; state.mastered=s.mastered||0;
+      state.reviewing=s.reviewing||0; state.vocMastered=s.vocMastered||0;
+      state.audMin=s.audMin||0; state.audDrills=s.audDrills||0;
+    }
+    state.audMinTotal=s.audMinTotal||0;
+    state.fcGoal=s.fcGoal||30; state.vocGoal=s.vocGoal||20; state.audioGoal=s.audioGoal||10;
+    if(s.activeTenses) state.activeTenses=new Set(s.activeTenses);
+    document.getElementById('g-fc').textContent=state.fcGoal;
+    document.getElementById('g-voc').textContent=state.vocGoal;
+    document.getElementById('g-audio').textContent=state.audioGoal;
+  } catch(e) {}
+}
+setInterval(saveState, 10000);
+
+// ── TENSE PILLS ──
+function renderTensePills(id) {
+  document.getElementById(id).innerHTML = TENSES.map(t =>
+    `<div class="pill ${state.activeTenses.has(t.key)?'t-active':''}" onclick="toggleTense('${t.key}')">${t.label}</div>`
+  ).join('');
+}
+function toggleTense(key) {
+  if (state.activeTenses.has(key)) { if(state.activeTenses.size>1) state.activeTenses.delete(key); }
+  else state.activeTenses.add(key);
+  renderTensePills('fc-tense-pills');
+  renderTensePills('audio-tense-pills');
+  buildFCQueue(); renderCard(); renderAudio();
+}
+
+// ── FLASHCARD QUEUE ──
+function buildFCQueue() {
+  const cards = [];
+  const shuffled = [...SENTENCES].sort(()=>Math.random()-.5);
+  for (const s of shuffled) {
+    for (let pi=0; pi<PRONOUNS_IT.length; pi++) {
+      for (const t of TENSES) {
+        if (!state.activeTenses.has(t.key)) continue;
+        cards.push({
+          type:'conj', tense:t.key, tenseLabel:t.label,
+          pronoun_it:PRONOUNS_IT[pi], pronoun_es:PRONOUNS_ES[pi],
+          it:s.conjs_it[t.key][pi], es:s.conjs_es[t.key][pi],
+          vocab_it:s.vocab_it,
+        });
+      }
+    }
+  }
+  state.fcQueue = cards; state.fcIdx = 0; state.fcGoalHit = false;
+}
+
+function renderCard() {
+  if (!state.fcQueue.length) buildFCQueue();
+  const c = state.fcQueue[state.fcIdx % state.fcQueue.length];
+  document.getElementById('card-counter').textContent = `Card ${state.fcDone+1} • Goal: ${state.fcGoal}/day`;
+  document.getElementById('card-inner').classList.remove('flipped');
+  state.fcFlipped = false;
+  document.getElementById('card-actions').classList.add('hidden');
+  document.getElementById('card-secondary-actions').style.display='none';
+  document.getElementById('flip-hint').classList.remove('hidden');
+  document.getElementById('front-chips').innerHTML = `<span class="chip chip-tense">${c.tenseLabel}</span><span class="chip chip-pronoun">${c.pronoun_it}</span>`;
+  document.getElementById('front-text').textContent = c.it;
+  document.getElementById('back-chips').innerHTML = `<span class="chip chip-tense">${c.tenseLabel}</span><span class="chip chip-pronoun">${c.pronoun_es}</span>`;
+  document.getElementById('back-text').textContent = c.es;
+  document.getElementById('back-sub').textContent = '';
+  setTimeout(()=>{ if(!state.fcFlipped) speakFrontCard(); }, 300);
+}
+
+function flipCard() {
+  if (state.fcFlipped) return;
+  state.fcFlipped = true;
+  document.getElementById('card-inner').classList.add('flipped');
+  document.getElementById('card-actions').classList.remove('hidden');
+  document.getElementById('card-secondary-actions').style.display='flex';
+  document.getElementById('flip-hint').classList.add('hidden');
+}
+
+function speakFrontCard() {
+  if (!state.fcQueue.length) return;
+  const c = state.fcQueue[state.fcIdx % state.fcQueue.length];
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(c.it);
+  u.lang='it-IT'; u.rate=state.audioRate;
+  const v=getItalianVoice(); if(v) u.voice=v;
+  window.speechSynthesis.speak(u);
+}
+
+function speakCurrentCard() { speakFrontCard(); }
+
+function flipBackCard() {
+  state.fcFlipped = false;
+  document.getElementById('card-inner').classList.remove('flipped');
+  document.getElementById('card-actions').classList.add('hidden');
+  document.getElementById('card-secondary-actions').style.display='none';
+  document.getElementById('flip-hint').classList.remove('hidden');
+  speakFrontCard();
+}
+
+function cardAnswer(got) {
+  if (!state.fcFlipped) return;
+  state.fcDone++; got?state.mastered++:state.reviewing++;
+  if (!got) {
+    const rem = state.fcQueue.splice(state.fcIdx%state.fcQueue.length,1)[0];
+    state.fcQueue.splice(Math.min(state.fcIdx+6,state.fcQueue.length),0,rem);
+  } else {
+    state.fcQueue.splice(state.fcIdx%state.fcQueue.length,1);
+    if(state.fcIdx>=state.fcQueue.length) state.fcIdx=0;
+  }
+  if(!state.fcQueue.length) buildFCQueue();
+  updateStats();
+  if(state.fcDone>=state.fcGoal&&!state.fcGoalHit){
+    state.fcGoalHit=true;
+    document.getElementById('fc-done').classList.remove('hidden');
+    document.getElementById('fc-main').classList.add('hidden');
+    return;
+  }
+  renderCard();
+}
+
+function keepGoing() {
+  buildFCQueue(); renderCard();
+  document.getElementById('fc-done').classList.add('hidden');
+  document.getElementById('fc-main').classList.remove('hidden');
+}
+
+// ── VOCABULARY ──
+function buildVocabQueue() {
+  state.vocQueue = [...VOCAB].sort(()=>Math.random()-.5);
+  state.vocIdx = 0; state.vocGoalHit = false;
+}
+
+function renderVocabCard() {
+  if (!state.vocQueue.length) buildVocabQueue();
+  const v = state.vocQueue[state.vocIdx % state.vocQueue.length];
+  document.getElementById('vocab-counter').textContent = `Card ${state.vocDone+1} • Goal: ${state.vocGoal}/day`;
+  document.getElementById('vocab-it-text').textContent = v.it;
+  document.getElementById('vocab-pos-text').textContent = v.pos;
+  document.getElementById('vocab-es-text').textContent = v.es;
+  document.getElementById('vocab-ex-it').textContent = v.ex_it;
+  document.getElementById('vocab-ex-es').textContent = v.ex_es;
+  document.getElementById('vocab-front-chips').innerHTML = '<span class="chip chip-vocab">vocabulary</span>';
+  // hide answer
+  document.getElementById('vocab-es-text').classList.add('hidden');
+  document.getElementById('vocab-ex-it').classList.add('hidden');
+  document.getElementById('vocab-ex-es').classList.add('hidden');
+  document.getElementById('vocab-hint').classList.remove('hidden');
+  document.getElementById('vocab-actions').classList.add('hidden');
+  document.getElementById('vocab-flip-shown').classList.add('hidden');
+  state.vocFlipped = false;
+  setTimeout(()=>{ if(!state.vocFlipped) speakVocabCard(); }, 300);
+}
+
+function flipVocabCard() {
+  if (state.vocFlipped) return;
+  state.vocFlipped = true;
+  document.getElementById('vocab-es-text').classList.remove('hidden');
+  document.getElementById('vocab-ex-it').classList.remove('hidden');
+  document.getElementById('vocab-ex-es').classList.remove('hidden');
+  document.getElementById('vocab-hint').classList.add('hidden');
+  document.getElementById('vocab-actions').classList.remove('hidden');
+  document.getElementById('vocab-flip-shown').classList.remove('hidden');
+}
+
+function speakVocabCard() {
+  if (!state.vocQueue.length) return;
+  const v = state.vocQueue[state.vocIdx % state.vocQueue.length];
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(v.it);
+  u.lang='it-IT'; u.rate=state.audioRate;
+  const voice=getItalianVoice(); if(voice) u.voice=voice;
+  window.speechSynthesis.speak(u);
+}
+
+function vocabAnswer(got) {
+  if (!state.vocFlipped) return;
+  state.vocDone++; got?state.vocMastered++:state.vocReviewing++;
+  if (!got) {
+    const rem = state.vocQueue.splice(state.vocIdx%state.vocQueue.length,1)[0];
+    state.vocQueue.splice(Math.min(state.vocIdx+5,state.vocQueue.length),0,rem);
+  } else {
+    state.vocQueue.splice(state.vocIdx%state.vocQueue.length,1);
+    if(state.vocIdx>=state.vocQueue.length) state.vocIdx=0;
+  }
+  if(!state.vocQueue.length) buildVocabQueue();
+  updateStats();
+  if(state.vocDone>=state.vocGoal&&!state.vocGoalHit){
+    state.vocGoalHit=true;
+    document.getElementById('vocab-done').classList.remove('hidden');
+    document.getElementById('vocab-main').classList.add('hidden');
+    return;
+  }
+  renderVocabCard();
+}
+
+function keepGoingVocab() {
+  buildVocabQueue(); renderVocabCard();
+  document.getElementById('vocab-done').classList.add('hidden');
+  document.getElementById('vocab-main').classList.remove('hidden');
+}
+
+// ── AUDIO ──
+let audioSearchQuery = '';
+function filterAudio(q) { audioSearchQuery = q.toLowerCase(); renderAudio(); }
+
+function renderAudio() {
+  const activeTenseList = TENSES.filter(t=>state.activeTenses.has(t.key));
+  let html = '';
+  for (const s of SENTENCES) {
+    if (audioSearchQuery && !s.vocab_it.includes(audioSearchQuery) && !s.vocab_es.includes(audioSearchQuery)) continue;
+    for (const t of activeTenseList) {
+      const key = s.vocab_it+'|'+t.key;
+      const playing = state.playingKey===key;
+      const rows = PRONOUNS_IT.map((pr,i) => {
+        const active = playing&&state.playingRow===i;
+        return `<div class="drill-row ${active?'active-row':''}">
+          <span class="drill-row-pr">${pr}</span>
+          <span class="drill-row-it">${s.conjs_it[t.key][i]}</span>
+          <span class="drill-row-es">${s.conjs_es[t.key][i]}</span>
+          ${active?`<div class="wave-bars">${'<div class="wave-bar"></div>'.repeat(5)}</div>`:''}
+        </div>`;
+      }).join('');
+      html += `<div class="drill-card">
+        <div class="drill-header">
+          <div><div class="drill-title">${s.vocab_it}</div><div class="drill-subtitle">${t.label} · ${s.vocab_es}</div></div>
+          <button class="drill-play-btn ${playing?'playing':''}" onclick="toggleDrill('${s.vocab_it}','${t.key}',${SENTENCES.indexOf(s)})">${playing?'■':'▶'}</button>
+        </div>
+        <div class="drill-rows">${rows}</div>
+      </div>`;
+    }
+  }
+  document.getElementById('audio-drill-list').innerHTML = html || '<p style="color:var(--muted);font-size:14px;text-align:center;padding:20px">No results</p>';
+}
+
+function toggleDrill(vocab, tKey, sIdx) {
+  const key = vocab+'|'+tKey;
+  if (state.playingKey===key) {
+    window.speechSynthesis.cancel();
+    if(state.audInterval) clearInterval(state.audInterval);
+    state.playingKey=null; state.playingRow=-1; renderAudio(); return;
+  }
+  window.speechSynthesis.cancel();
+  if(state.audInterval) clearInterval(state.audInterval);
+  state.playingKey=key; state.audDrills++;
+  playRow(SENTENCES[sIdx], tKey, 0);
+}
+
+function playRow(s, tKey, idx) {
+  if (!state.playingKey||idx>=PRONOUNS_IT.length) {
+    if(state.audInterval) clearInterval(state.audInterval);
+    state.playingKey=null; state.playingRow=-1; renderAudio(); return;
+  }
+  state.playingRow=idx; renderAudio();
+  const it = s.conjs_it[tKey][idx];
+  const es = s.conjs_es[tKey][idx];
+  state.audInterval = setInterval(()=>{
+    state.audMin=parseFloat((state.audMin+1/60).toFixed(4));
+    state.audMinTotal=parseFloat((state.audMinTotal+1/60).toFixed(4));
+    updateStats();
+  },1000);
+  const u1 = new SpeechSynthesisUtterance(it); u1.lang='it-IT'; u1.rate=state.audioRate;
+  const v=getItalianVoice(); if(v) u1.voice=v;
+  const u2 = new SpeechSynthesisUtterance(es); u2.lang='es-ES'; u2.rate=state.audioRate;
+  u2.onend = ()=>{ clearInterval(state.audInterval); if(state.playingKey) playRow(s,tKey,idx+1); };
+  u1.onend = ()=>window.speechSynthesis.speak(u2);
+  window.speechSynthesis.speak(u1);
+}
+
+// ── STATS ──
+function updateStats() {
+  const fp=Math.min(100,Math.round(state.fcDone/state.fcGoal*100));
+  const vp=Math.min(100,Math.round(state.vocDone/state.vocGoal*100));
+  const ap=Math.min(100,Math.round(state.audMin/state.audioGoal*100));
+  document.getElementById('fc-bar').style.width=fp+'%';
+  document.getElementById('fc-meta').textContent=`${state.fcDone} / ${state.fcGoal} today`;
+  document.getElementById('voc-bar').style.width=vp+'%';
+  document.getElementById('voc-meta').textContent=`${state.vocDone} / ${state.vocGoal} today`;
+  document.getElementById('audio-bar').style.width=ap+'%';
+  document.getElementById('audio-meta').textContent=`${(Math.round(state.audMin*10)/10).toFixed(1)} / ${state.audioGoal} min today`;
+  document.getElementById('stat-mastered').textContent=state.mastered+state.vocMastered;
+  document.getElementById('stat-reviewing').textContent=state.reviewing;
+  document.getElementById('stat-listen').textContent=Math.round(state.audMinTotal)+'m';
+  document.getElementById('aud-today').textContent=(Math.round(state.audMin*10)/10).toFixed(1);
+  document.getElementById('aud-drills').textContent=state.audDrills;
+  document.getElementById('aud-total').textContent=(Math.round(state.audMinTotal*10)/10).toFixed(1);
+}
+
+function adj(type,d) {
+  if(type==='fc'){state.fcGoal=Math.max(5,state.fcGoal+d);document.getElementById('g-fc').textContent=state.fcGoal;}
+  else if(type==='voc'){state.vocGoal=Math.max(5,state.vocGoal+d);document.getElementById('g-voc').textContent=state.vocGoal;}
+  else{state.audioGoal=Math.max(5,state.audioGoal+d);document.getElementById('g-audio').textContent=state.audioGoal;}
+  updateStats();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  ['home','flashcards','vocab','audio','settings'].forEach((t,i)=>{
+    if(t===tab){document.querySelectorAll('.tab')[i].classList.add('active');document.getElementById('screen-'+t).classList.add('active');}
+  });
+}
+
+function setGreeting() {
+  const h=new Date().getHours();
+  document.getElementById('greeting-text').innerHTML=`${h<12?'Buongiorno':h<18?'Buonasera':'Buonanotte'} Bernardo,<br>continua a studiare.`;
+  document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+}
+
+// ── PROFILE ──
+let currentProfile = null;
+
+function getProfileStats(key) {
+  try {
+    const s = JSON.parse(localStorage.getItem('italiano_state_'+key));
+    if (!s) return 'no sessions yet';
+    return (s.mastered||0) + ' mastered · ' + Math.round(s.audMinTotal||0) + 'm listened';
+  } catch(e) { return 'no sessions yet'; }
+}
+
+function showProfileScreen() {
+  document.getElementById('profile-screen').style.display='flex';
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('bernardo-stats').textContent=getProfileStats('bernardo');
+}
+
+function selectProfile(name) {
+  currentProfile=name;
+  document.getElementById('profile-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  document.getElementById('profile-badge').textContent=name.charAt(0).toUpperCase()+name.slice(1);
+  state.fcDone=0;state.vocDone=0;state.mastered=0;state.reviewing=0;
+  state.vocMastered=0;state.audMin=0;state.audMinTotal=0;state.audDrills=0;
+  state.fcGoal=30;state.vocGoal=20;state.audioGoal=10;
+  state.activeTenses=new Set(['presente','passato','imperfetto','futuro','congiuntivo']);
+  loadState();
+  buildFCQueue(); buildVocabQueue();
+  renderTensePills('fc-tense-pills'); renderTensePills('audio-tense-pills');
+  renderCard(); renderVocabCard(); renderAudio();
+  updateStats(); setGreeting();
+}
+
+// ── INIT ──
+const totalConj = SENTENCES.length*TENSES.length*PRONOUNS_IT.length;
+document.getElementById('deck-count').textContent=totalConj.toLocaleString()+' conjugation cards';
+document.getElementById('vocab-count').textContent=VOCAB.length+' vocabulary cards';
+document.getElementById('bernardo-stats').textContent=getProfileStats('bernardo');
+</script>
+</body>
+</html>
