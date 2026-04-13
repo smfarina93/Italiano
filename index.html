@@ -149,8 +149,8 @@
 <div id="profile-screen" style="min-height:100vh;background:#080C14;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;max-width:430px;margin:0 auto;">
   <div style="font-family:'Space Grotesk',sans-serif;text-align:center;width:100%;">
     <div style="font-size:13px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:rgba(246,173,85,0.5);margin-bottom:16px;">italiano.</div>
-    <div style="font-size:28px;font-weight:600;color:#E2E8F0;margin-bottom:8px;letter-spacing:-0.02em;">Chi studia?</div>
-    <div style="font-size:14px;color:rgba(226,232,240,0.35);margin-bottom:48px;">Tap your name to load your progress.</div>
+    <div style="font-size:28px;font-weight:600;color:#E2E8F0;margin-bottom:8px;letter-spacing:-0.02em;">¿Quién estudia?</div>
+    <div style="font-size:14px;color:rgba(226,232,240,0.35);margin-bottom:48px;">Toca tu nombre para cargar tu progreso.</div>
     <div style="display:flex;flex-direction:column;gap:14px;width:100%;">
       <button onclick="selectProfile('bernardo')" style="width:100%;padding:20px;border-radius:16px;background:#0E1420;border:1px solid rgba(246,173,85,0.2);font-family:'Space Grotesk',sans-serif;cursor:pointer;display:flex;align-items:center;gap:16px;text-align:left;-webkit-tap-highlight-color:transparent;">
         <div style="width:48px;height:48px;border-radius:14px;background:rgba(246,173,85,0.12);border:1px solid rgba(246,173,85,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;color:var(--italian);flex-shrink:0;">B</div>
@@ -175,11 +175,11 @@
   <div class="streak">🔥 <span id="streak-num">0</span> day streak</div>
 </div>
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('home')">Home</div>
-  <div class="tab" onclick="switchTab('flashcards')">Cards</div>
+  <div class="tab active" onclick="switchTab('home')">Inicio</div>
+  <div class="tab" onclick="switchTab('flashcards')">Tarjetas</div>
   <div class="tab" onclick="switchTab('vocab')">Vocab</div>
   <div class="tab" onclick="switchTab('audio')">Audio</div>
-  <div class="tab" onclick="switchTab('settings')">Goals</div>
+  <div class="tab" onclick="switchTab('settings')">Metas</div>
 </div>
 
 <!-- HOME -->
@@ -189,7 +189,7 @@
   <div class="goal-card" onclick="switchTab('flashcards')">
     <div class="goal-icon flash">IT</div>
     <div class="goal-content">
-      <div class="goal-title">Conjugation cards</div>
+      <div class="goal-title">Tarjetas de conjugación</div>
       <div class="goal-progress-bar"><div class="goal-fill-orange" id="fc-bar" style="width:0%"></div></div>
       <div class="goal-meta" id="fc-meta">0 / 30 today</div>
     </div>
@@ -198,7 +198,7 @@
   <div class="goal-card" onclick="switchTab('vocab')">
     <div class="goal-icon vocab">V</div>
     <div class="goal-content">
-      <div class="goal-title">Vocabulary cards</div>
+      <div class="goal-title">Tarjetas de vocabulario</div>
       <div class="goal-progress-bar"><div class="goal-fill-purple" id="voc-bar" style="width:0%"></div></div>
       <div class="goal-meta" id="voc-meta">0 / 20 today</div>
     </div>
@@ -207,20 +207,20 @@
   <div class="goal-card" onclick="switchTab('audio')">
     <div class="goal-icon audio">▶</div>
     <div class="goal-content">
-      <div class="goal-title">Audio drills</div>
+      <div class="goal-title">Ejercicios de audio</div>
       <div class="goal-progress-bar"><div class="goal-fill-blue" id="audio-bar" style="width:0%"></div></div>
       <div class="goal-meta" id="audio-meta">0 / 10 min today</div>
     </div>
     <div class="goal-arrow">›</div>
   </div>
-  <div class="section-title" style="margin-top:8px">This week</div>
+  <div class="section-title" style="margin-top:8px">Esta semana</div>
   <div class="stats-row">
-    <div class="stat-card"><div class="stat-num" id="stat-mastered">0</div><div class="stat-label">Mastered</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-reviewing">0</div><div class="stat-label">Reviewing</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-listen">0m</div><div class="stat-label">Listened</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-mastered">0</div><div class="stat-label">Dominadas</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-reviewing">0</div><div class="stat-label">Repasando</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-listen">0m</div><div class="stat-label">Escuchado</div></div>
   </div>
   <div class="pwa-banner">
-    <div class="pwa-banner-title">📱 Add to home screen</div>
+    <div class="pwa-banner-title">📱 Añadir a pantalla de inicio</div>
     <div class="pwa-banner-body">iPhone: Share → "Add to Home Screen"<br>Android: Menu → "Add to Home Screen"</div>
   </div>
 </div>
@@ -231,12 +231,12 @@
     <span class="lang-badge lang-it">IT</span>
     <span style="font-size:11px;color:var(--muted);">→</span>
     <span class="lang-badge lang-es">ES</span>
-    <span style="font-size:11px;color:var(--muted);margin-left:4px;">Conjugation drill</span>
+    <span style="font-size:11px;color:var(--muted);margin-left:4px;">Ejercicio de conjugación</span>
   </div>
   <div class="filter-row" id="fc-tense-pills"></div>
   <div id="fc-main">
-    <div class="card-counter" id="card-counter">Card 1</div>
-    <div class="card-area" onclick="flipCard()">
+    <div class="card-counter" id="card-counter">Tarjeta 1</div>
+    <div class="card-area" onclick="flipTarjeta()">
       <div class="card-inner" id="card-inner">
         <div class="card-face card-front">
           <div class="card-chips" id="front-chips"></div>
@@ -253,25 +253,25 @@
       </div>
     </div>
     <div class="card-actions hidden" id="card-actions">
-      <button class="btn-again" onclick="cardAnswer(false)">Again</button>
-      <button class="btn-got" onclick="cardAnswer(true)">✓ Got it</button>
+      <button class="btn-again" onclick="cardAnswer(false)">Repetir</button>
+      <button class="btn-got" onclick="cardAnswer(true)">✓ Lo sé</button>
     </div>
     <div id="card-secondary-actions" style="display:none;gap:10px;margin-top:10px;justify-content:center;">
-      <button onclick="speakCurrentCard()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'Space Grotesk',sans-serif;">▶ Repeat</button>
-      <button onclick="flipBackCard()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;">↩ Italian</button>
+      <button onclick="speakCurrentTarjeta()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'Space Grotesk',sans-serif;">▶ Repetir</button>
+      <button onclick="flipBackTarjeta()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;">↩ Italiano</button>
     </div>
     <div style="display:flex;gap:10px;justify-content:center;margin-bottom:10px;">
-      <button onclick="speakFrontCard()" style="background:var(--italian-light);border:1px solid rgba(246,173,85,0.3);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:500;color:var(--italian);cursor:pointer;font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;">▶ Ascolta</button>
+      <button onclick="speakFrontTarjeta()" style="background:var(--italian-light);border:1px solid rgba(246,173,85,0.3);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:500;color:var(--italian);cursor:pointer;font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;">▶ Ascolta</button>
     </div>
     <div class="flip-hint" id="flip-hint">
-      <button class="btn-again" style="max-width:180px" onclick="flipCard()">Flip</button>
+      <button class="btn-again" style="max-width:180px" onclick="flipTarjeta()">Flip</button>
     </div>
   </div>
   <div class="fc-done hidden" id="fc-done">
     <div class="fc-done-icon">🎉</div>
-    <div class="fc-done-title">Goal reached!</div>
-    <div class="fc-done-sub">Keep drilling or come back tomorrow.</div>
-    <button class="btn-primary" onclick="keepGoing()">Keep going</button>
+    <div class="fc-done-title">¡Meta alcanzada!</div>
+    <div class="fc-done-sub">Sigue practicando o vuelve mañana.</div>
+    <button class="btn-primary" onclick="keepGoing()">Continuar</button>
   </div>
 </div>
 
@@ -286,39 +286,39 @@
     <span style="font-size:12px;color:var(--muted);" id="vocab-counter"></span>
   </div>
   <div id="vocab-main">
-    <div class="vocab-card" onclick="flipVocabCard()" id="vocab-card">
+    <div class="vocab-card" onclick="flipVocabTarjeta()" id="vocab-card">
       <div class="card-chips" id="vocab-front-chips"></div>
       <div class="vocab-it" id="vocab-it-text"></div>
       <div class="vocab-pos" id="vocab-pos-text"></div>
       <div class="vocab-es hidden" id="vocab-es-text"></div>
       <div class="vocab-ex-it hidden" id="vocab-ex-it"></div>
       <div class="vocab-ex-es hidden" id="vocab-ex-es"></div>
-      <div class="card-hint" id="vocab-hint">tap to reveal</div>
+      <div class="card-hint" id="vocab-hint">toca para revelar</div>
     </div>
     <div style="display:flex;gap:10px;justify-content:center;margin-bottom:10px;">
-      <button onclick="speakVocabCard()" style="background:var(--italian-light);border:1px solid rgba(246,173,85,0.3);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:500;color:var(--italian);cursor:pointer;font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;">▶ Ascolta</button>
+      <button onclick="speakVocabTarjeta()" style="background:var(--italian-light);border:1px solid rgba(246,173,85,0.3);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:500;color:var(--italian);cursor:pointer;font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;">▶ Ascolta</button>
     </div>
     <div class="card-actions hidden" id="vocab-actions">
-      <button class="btn-again" onclick="vocabAnswer(false)">Again</button>
-      <button class="btn-got" onclick="vocabAnswer(true)">✓ Got it</button>
+      <button class="btn-again" onclick="vocabAnswer(false)">Repetir</button>
+      <button class="btn-got" onclick="vocabAnswer(true)">✓ Lo sé</button>
     </div>
     <div class="flip-hint hidden" id="vocab-flip-shown">
-      <button onclick="speakVocabCard()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'Space Grotesk',sans-serif;">▶ Repeat</button>
+      <button onclick="speakVocabTarjeta()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'Space Grotesk',sans-serif;">▶ Repetir</button>
     </div>
   </div>
   <div class="fc-done hidden" id="vocab-done">
     <div class="fc-done-icon">🎉</div>
-    <div class="fc-done-title">Vocab goal hit!</div>
-    <div class="fc-done-sub">You nailed your daily vocab target.</div>
-    <button class="btn-primary" onclick="keepGoingVocab()">Keep going</button>
+    <div class="fc-done-title">¡Meta de vocabulario alcanzada!</div>
+    <div class="fc-done-sub">Alcanzaste tu meta diaria de vocabulario.</div>
+    <button class="btn-primary" onclick="keepGoingVocab()">Continuar</button>
   </div>
 </div>
 
 <!-- AUDIO -->
 <div class="screen" id="screen-audio">
   <div class="audio-stats-row">
-    <div class="audio-stat"><div class="audio-stat-num" id="aud-today">0.0</div><div class="audio-stat-label">Min today</div></div>
-    <div class="audio-stat"><div class="audio-stat-num" id="aud-drills">0</div><div class="audio-stat-label">Drills run</div></div>
+    <div class="audio-stat"><div class="audio-stat-num" id="aud-today">0.0</div><div class="audio-stat-label">Min hoy</div></div>
+    <div class="audio-stat"><div class="audio-stat-num" id="aud-drills">0</div><div class="audio-stat-label">Ejercicios</div></div>
     <div class="audio-stat"><div class="audio-stat-num" id="aud-total">0.0</div><div class="audio-stat-label">Min total</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;">
@@ -327,16 +327,16 @@
     <span id="speed-val" style="font-size:13px;font-weight:500;color:var(--accent);min-width:60px;text-align:right;">Slow</span>
   </div>
   <div class="filter-row" id="audio-tense-pills"></div>
-  <input class="audio-search" type="search" placeholder="Search sentences..." oninput="filterAudio(this.value)">
+  <input class="audio-search" type="search" placeholder="Buscar frases..." oninput="filterAudio(this.value)">
   <div id="audio-drill-list"></div>
 </div>
 
 <!-- SETTINGS -->
 <div class="screen" id="screen-settings">
-  <div class="section-title">Daily goals</div>
+  <div class="section-title">Metas diarias</div>
   <div class="settings-section">
     <div class="settings-row">
-      <div><div class="settings-label">Conjugation cards</div><div class="settings-sub">IT → ES verb forms</div></div>
+      <div><div class="settings-label">Tarjetas de conjugación</div><div class="settings-sub">Formas verbales IT → ES</div></div>
       <div class="num-input">
         <div class="num-btn" onclick="adj('fc',-5)">−</div>
         <div class="num-val" id="g-fc">30</div>
@@ -344,7 +344,7 @@
       </div>
     </div>
     <div class="settings-row">
-      <div><div class="settings-label">Vocabulary cards</div><div class="settings-sub">Common Italian words</div></div>
+      <div><div class="settings-label">Tarjetas de vocabulario</div><div class="settings-sub">Palabras comunes en italiano</div></div>
       <div class="num-input">
         <div class="num-btn" onclick="adj('voc',-5)">−</div>
         <div class="num-val" id="g-voc">20</div>
@@ -352,7 +352,7 @@
       </div>
     </div>
     <div class="settings-row">
-      <div><div class="settings-label">Audio minutes</div><div class="settings-sub">Italian listening drills</div></div>
+      <div><div class="settings-label">Minutos de audio</div><div class="settings-sub">Ejercicios de escucha en italiano</div></div>
       <div class="num-input">
         <div class="num-btn" onclick="adj('audio',-5)">−</div>
         <div class="num-val" id="g-audio">10</div>
@@ -360,20 +360,20 @@
       </div>
     </div>
   </div>
-  <div class="section-title">Voice</div>
+  <div class="section-title">Voz</div>
   <div class="settings-section">
     <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px">
-      <div><div class="settings-label">Italian voice</div><div class="settings-sub">iOS: Settings → Accessibility → Spoken Content → Voices → Italian → download Enhanced</div></div>
-      <select id="voice-select" onchange="onVoiceChange(this.value)" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
-        <option>Loading voices...</option>
+      <div><div class="settings-label">Voz en italiano</div><div class="settings-sub">iOS: Settings → Accessibility → Spoken Content → Vozs → Italian → download Enhanced</div></div>
+      <select id="voice-select" onchange="onVozChange(this.value)" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text);">
+        <option>Cargando voces...</option>
       </select>
     </div>
   </div>
-  <div class="section-title">Deck info</div>
+  <div class="section-title">Información del mazo</div>
   <div class="settings-section">
-    <div class="settings-row"><div><div class="settings-label" id="deck-count">Loading...</div><div class="settings-sub">Total conjugation cards</div></div></div>
-    <div class="settings-row"><div><div class="settings-label" id="vocab-count">Loading...</div><div class="settings-sub">Vocabulary cards</div></div></div>
-    <div class="settings-row"><div><div class="settings-label">6 pronouns × 5 tenses per sentence</div><div class="settings-sub">presente, passato prossimo, imperfetto, futuro, congiuntivo</div></div></div>
+    <div class="settings-row"><div><div class="settings-label" id="deck-count">Loading...</div><div class="settings-sub">Tarjetas de conjugación en total</div></div></div>
+    <div class="settings-row"><div><div class="settings-label" id="vocab-count">Loading...</div><div class="settings-sub">Tarjetas de vocabulario</div></div></div>
+    <div class="settings-row"><div><div class="settings-label">6 pronombres × 5 tiempos por frase</div><div class="settings-sub">presente, passato, imperfetto, futuro, congiuntivo</div></div></div>
   </div>
 </div>
 
@@ -813,32 +813,32 @@ function setAudioSpeed(val) {
   document.getElementById('speed-val').textContent = SPEED_LABEL[val];
 }
 
-let availableVoices = [];
-let selectedVoiceURI = null;
-function loadVoices() {
-  availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('it'));
+let availableVozs = [];
+let selectedVozURI = null;
+function loadVozs() {
+  availableVozs = window.speechSynthesis.getVozs().filter(v => v.lang.startsWith('it'));
   const sel = document.getElementById('voice-select');
   if (!sel) return;
-  sel.innerHTML = availableVoices.length
-    ? availableVoices.map((v,i) => `<option value="${v.voiceURI}">${v.name} (${v.lang})</option>`).join('')
-    : '<option>No Italian voices found — install in iOS Settings</option>';
-  if (availableVoices.length) selectedVoiceURI = availableVoices[0].voiceURI;
-  const premium = availableVoices.find(v => v.name.includes('Alice') || v.name.includes('Luca') || v.name.includes('enhanced') || v.name.includes('premium'));
-  if (premium) { selectedVoiceURI = premium.voiceURI; sel.value = premium.voiceURI; }
+  sel.innerHTML = availableVozs.length
+    ? availableVozs.map((v,i) => `<option value="${v.voiceURI}">${v.name} (${v.lang})</option>`).join('')
+    : '<option>No Voz en italianos found — install in iOS Settings</option>';
+  if (availableVozs.length) selectedVozURI = availableVozs[0].voiceURI;
+  const premium = availableVozs.find(v => v.name.includes('Alice') || v.name.includes('Luca') || v.name.includes('enhanced') || v.name.includes('premium'));
+  if (premium) { selectedVozURI = premium.voiceURI; sel.value = premium.voiceURI; }
 }
-window.speechSynthesis.onvoiceschanged = loadVoices;
-setTimeout(loadVoices, 500);
-function onVoiceChange(val) { selectedVoiceURI = val; }
-function getItalianVoice() {
-  const voices = window.speechSynthesis.getVoices();
-  return voices.find(v => v.voiceURI === selectedVoiceURI) || voices.find(v => v.lang.startsWith('it')) || null;
+window.speechSynthesis.onvoiceschanged = loadVozs;
+setTimeout(loadVozs, 500);
+function onVozChange(val) { selectedVozURI = val; }
+function getItalianVoz() {
+  const voices = window.speechSynthesis.getVozs();
+  return voices.find(v => v.voiceURI === selectedVozURI) || voices.find(v => v.lang.startsWith('it')) || null;
 }
 
 let state = {
   audioRate: 0.5,
-  fcGoal:30, vocGoal:20, audioGoal:10,
+  fcMeta:30, vocMeta:20, audioMeta:10,
   fcDone:0, vocDone:0, mastered:0, reviewing:0,
-  vocMastered:0, vocReviewing:0,
+  vocDominadas:0, vocRepasando:0,
   audMin:0, audMinTotal:0, audDrills:0,
   activeTenses: new Set(['presente','passato','imperfetto','futuro','congiuntivo']),
   fcQueue:[], fcIdx:0, fcGoalHit:false, fcFlipped:false,
@@ -851,8 +851,8 @@ function storageKey() { return 'italiano_state_' + (currentProfile || 'bernardo'
 function saveState() {
   try { localStorage.setItem(storageKey(), JSON.stringify({
     fcDone:state.fcDone, vocDone:state.vocDone, mastered:state.mastered, reviewing:state.reviewing,
-    vocMastered:state.vocMastered, audMin:state.audMin, audMinTotal:state.audMinTotal, audDrills:state.audDrills,
-    fcGoal:state.fcGoal, vocGoal:state.vocGoal, audioGoal:state.audioGoal,
+    vocDominadas:state.vocDominadas, audMin:state.audMin, audMinTotal:state.audMinTotal, audDrills:state.audDrills,
+    fcMeta:state.fcGoal, vocMeta:state.vocGoal, audioMeta:state.audioGoal,
     activeTenses:[...state.activeTenses], lastDate:new Date().toDateString(),
   })); } catch(e) {}
 }
@@ -863,10 +863,10 @@ function loadState() {
     if (!s) return;
     const isNewDay = s.lastDate !== new Date().toDateString();
     if (isNewDay) {
-      state.fcDone=0; state.vocDone=0; state.mastered=0; state.reviewing=0; state.vocMastered=0; state.audMin=0; state.audDrills=0;
+      state.fcDone=0; state.vocDone=0; state.mastered=0; state.reviewing=0; state.vocDominadas=0; state.audMin=0; state.audDrills=0;
     } else {
       state.fcDone=s.fcDone||0; state.vocDone=s.vocDone||0; state.mastered=s.mastered||0;
-      state.reviewing=s.reviewing||0; state.vocMastered=s.vocMastered||0;
+      state.reviewing=s.reviewing||0; state.vocDominadas=s.vocDominadas||0;
       state.audMin=s.audMin||0; state.audDrills=s.audDrills||0;
     }
     state.audMinTotal=s.audMinTotal||0;
@@ -890,7 +890,7 @@ function toggleTense(key) {
   else state.activeTenses.add(key);
   renderTensePills('fc-tense-pills');
   renderTensePills('audio-tense-pills');
-  buildFCQueue(); renderCard(); renderAudio();
+  buildFCQueue(); renderTarjeta(); renderAudio();
 }
 
 // ── FLASHCARD QUEUE ──
@@ -913,10 +913,10 @@ function buildFCQueue() {
   state.fcQueue = cards; state.fcIdx = 0; state.fcGoalHit = false;
 }
 
-function renderCard() {
+function renderTarjeta() {
   if (!state.fcQueue.length) buildFCQueue();
   const c = state.fcQueue[state.fcIdx % state.fcQueue.length];
-  document.getElementById('card-counter').textContent = `Card ${state.fcDone+1} • Goal: ${state.fcGoal}/day`;
+  document.getElementById('card-counter').textContent = `Tarjeta ${state.fcDone+1} • Meta: ${state.fcGoal}/day`;
   document.getElementById('card-inner').classList.remove('flipped');
   state.fcFlipped = false;
   document.getElementById('card-actions').classList.add('hidden');
@@ -929,7 +929,7 @@ function renderCard() {
   document.getElementById('back-sub').textContent = '';
 }
 
-function flipCard() {
+function flipTarjeta() {
   if (state.fcFlipped) return;
   state.fcFlipped = true;
   document.getElementById('card-inner').classList.add('flipped');
@@ -938,25 +938,25 @@ function flipCard() {
   document.getElementById('flip-hint').classList.add('hidden');
 }
 
-function speakFrontCard() {
+function speakFrontTarjeta() {
   if (!state.fcQueue.length) return;
   const c = state.fcQueue[state.fcIdx % state.fcQueue.length];
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(c.it);
   u.lang='it-IT'; u.rate=state.audioRate;
-  const v=getItalianVoice(); if(v) u.voice=v;
+  const v=getItalianVoz(); if(v) u.voice=v;
   window.speechSynthesis.speak(u);
 }
 
-function speakCurrentCard() { speakFrontCard(); }
+function speakCurrentTarjeta() { speakFrontTarjeta(); }
 
-function flipBackCard() {
+function flipBackTarjeta() {
   state.fcFlipped = false;
   document.getElementById('card-inner').classList.remove('flipped');
   document.getElementById('card-actions').classList.add('hidden');
   document.getElementById('card-secondary-actions').style.display='none';
   document.getElementById('flip-hint').classList.remove('hidden');
-  speakFrontCard();
+  speakFrontTarjeta();
 }
 
 function cardAnswer(got) {
@@ -977,11 +977,11 @@ function cardAnswer(got) {
     document.getElementById('fc-main').classList.add('hidden');
     return;
   }
-  renderCard();
+  renderTarjeta();
 }
 
 function keepGoing() {
-  buildFCQueue(); renderCard();
+  buildFCQueue(); renderTarjeta();
   document.getElementById('fc-done').classList.add('hidden');
   document.getElementById('fc-main').classList.remove('hidden');
 }
@@ -992,10 +992,10 @@ function buildVocabQueue() {
   state.vocIdx = 0; state.vocGoalHit = false;
 }
 
-function renderVocabCard() {
+function renderVocabTarjeta() {
   if (!state.vocQueue.length) buildVocabQueue();
   const v = state.vocQueue[state.vocIdx % state.vocQueue.length];
-  document.getElementById('vocab-counter').textContent = `Card ${state.vocDone+1} • Goal: ${state.vocGoal}/day`;
+  document.getElementById('vocab-counter').textContent = `Tarjeta ${state.vocDone+1} • Meta: ${state.vocGoal}/day`;
   document.getElementById('vocab-it-text').textContent = v.it;
   document.getElementById('vocab-pos-text').textContent = v.pos;
   document.getElementById('vocab-es-text').textContent = v.es;
@@ -1012,7 +1012,7 @@ function renderVocabCard() {
   state.vocFlipped = false;
 }
 
-function flipVocabCard() {
+function flipVocabTarjeta() {
   if (state.vocFlipped) return;
   state.vocFlipped = true;
   document.getElementById('vocab-es-text').classList.remove('hidden');
@@ -1023,19 +1023,19 @@ function flipVocabCard() {
   document.getElementById('vocab-flip-shown').classList.remove('hidden');
 }
 
-function speakVocabCard() {
+function speakVocabTarjeta() {
   if (!state.vocQueue.length) return;
   const v = state.vocQueue[state.vocIdx % state.vocQueue.length];
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(v.it);
   u.lang='it-IT'; u.rate=state.audioRate;
-  const voice=getItalianVoice(); if(voice) u.voice=voice;
+  const voice=getItalianVoz(); if(voice) u.voice=voice;
   window.speechSynthesis.speak(u);
 }
 
 function vocabAnswer(got) {
   if (!state.vocFlipped) return;
-  state.vocDone++; got?state.vocMastered++:state.vocReviewing++;
+  state.vocDone++; got?state.vocDominadas++:state.vocRepasando++;
   if (!got) {
     const rem = state.vocQueue.splice(state.vocIdx%state.vocQueue.length,1)[0];
     state.vocQueue.splice(Math.min(state.vocIdx+5,state.vocQueue.length),0,rem);
@@ -1051,11 +1051,11 @@ function vocabAnswer(got) {
     document.getElementById('vocab-main').classList.add('hidden');
     return;
   }
-  renderVocabCard();
+  renderVocabTarjeta();
 }
 
 function keepGoingVocab() {
-  buildVocabQueue(); renderVocabCard();
+  buildVocabQueue(); renderVocabTarjeta();
   document.getElementById('vocab-done').classList.add('hidden');
   document.getElementById('vocab-main').classList.remove('hidden');
 }
@@ -1120,7 +1120,7 @@ function playRow(s, tKey, idx) {
     updateStats();
   },1000);
   const u1 = new SpeechSynthesisUtterance(it); u1.lang='it-IT'; u1.rate=state.audioRate;
-  const v=getItalianVoice(); if(v) u1.voice=v;
+  const v=getItalianVoz(); if(v) u1.voice=v;
   const u2 = new SpeechSynthesisUtterance(es); u2.lang='es-ES'; u2.rate=state.audioRate;
   u2.onend = ()=>{ clearInterval(state.audInterval); if(state.playingKey) playRow(s,tKey,idx+1); };
   u1.onend = ()=>window.speechSynthesis.speak(u2);
@@ -1138,7 +1138,7 @@ function updateStats() {
   document.getElementById('voc-meta').textContent=`${state.vocDone} / ${state.vocGoal} today`;
   document.getElementById('audio-bar').style.width=ap+'%';
   document.getElementById('audio-meta').textContent=`${(Math.round(state.audMin*10)/10).toFixed(1)} / ${state.audioGoal} min today`;
-  document.getElementById('stat-mastered').textContent=state.mastered+state.vocMastered;
+  document.getElementById('stat-mastered').textContent=state.mastered+state.vocDominadas;
   document.getElementById('stat-reviewing').textContent=state.reviewing;
   document.getElementById('stat-listen').textContent=Math.round(state.audMinTotal)+'m';
   document.getElementById('aud-today').textContent=(Math.round(state.audMin*10)/10).toFixed(1);
@@ -1163,7 +1163,7 @@ function switchTab(tab) {
 
 function setGreeting() {
   const h=new Date().getHours();
-  document.getElementById('greeting-text').innerHTML=`${h<12?'Buongiorno':h<18?'Buonasera':'Buonanotte'} Bernardo,<br>continua a studiare.`;
+  document.getElementById('greeting-text').innerHTML=`${h<12?'Buenos días':h<18?'Buenas tardes':'Buenas noches'} Bernardo,<br>sigue practicando.`;
   document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 }
 
@@ -1173,9 +1173,9 @@ let currentProfile = null;
 function getProfileStats(key) {
   try {
     const s = JSON.parse(localStorage.getItem('italiano_state_'+key));
-    if (!s) return 'no sessions yet';
+    if (!s) return 'sin sesiones aún';
     return (s.mastered||0) + ' mastered · ' + Math.round(s.audMinTotal||0) + 'm listened';
-  } catch(e) { return 'no sessions yet'; }
+  } catch(e) { return 'sin sesiones aún'; }
 }
 
 function showProfileScreen() {
@@ -1190,13 +1190,13 @@ function selectProfile(name) {
   document.getElementById('app-screen').style.display='block';
   document.getElementById('profile-badge').textContent=name.charAt(0).toUpperCase()+name.slice(1);
   state.fcDone=0;state.vocDone=0;state.mastered=0;state.reviewing=0;
-  state.vocMastered=0;state.audMin=0;state.audMinTotal=0;state.audDrills=0;
+  state.vocDominadas=0;state.audMin=0;state.audMinTotal=0;state.audDrills=0;
   state.fcGoal=30;state.vocGoal=20;state.audioGoal=10;
   state.activeTenses=new Set(['presente','passato','imperfetto','futuro','congiuntivo']);
   loadState();
   buildFCQueue(); buildVocabQueue();
   renderTensePills('fc-tense-pills'); renderTensePills('audio-tense-pills');
-  renderCard(); renderVocabCard(); renderAudio();
+  renderTarjeta(); renderVocabTarjeta(); renderAudio();
   updateStats(); setGreeting();
 }
 
