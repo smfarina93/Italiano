@@ -242,10 +242,7 @@
           <div class="card-chips" id="front-chips"></div>
           <div class="card-lang">italiano</div>
           <div class="card-main" id="front-text"></div>
-          <div style="display:flex;gap:10px;margin-top:18px;align-items:center;justify-content:center;">
-            <button onclick="event.stopPropagation();speakFrontCard()" style="background:var(--italian-light);border:1px solid rgba(246,173,85,0.3);border-radius:30px;padding:7px 16px;font-size:12px;font-weight:500;color:var(--italian);cursor:pointer;font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;">▶ Ascolta</button>
-          </div>
-          <div class="card-hint" style="margin-top:10px;">tap card to reveal</div>
+          <div class="card-hint">tap card to reveal</div>
         </div>
         <div class="card-face card-back">
           <div class="card-chips" id="back-chips"></div>
@@ -262,6 +259,9 @@
     <div id="card-secondary-actions" style="display:none;gap:10px;margin-top:10px;justify-content:center;">
       <button onclick="speakCurrentCard()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--accent);cursor:pointer;font-family:'Space Grotesk',sans-serif;">▶ Repeat</button>
       <button onclick="flipBackCard()" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 16px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;">↩ Italian</button>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:10px;">
+      <button onclick="speakFrontCard()" style="background:var(--italian-light);border:1px solid rgba(246,173,85,0.3);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:500;color:var(--italian);cursor:pointer;font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;">▶ Ascolta</button>
     </div>
     <div class="flip-hint" id="flip-hint">
       <button class="btn-again" style="max-width:180px" onclick="flipCard()">Flip</button>
@@ -290,11 +290,13 @@
       <div class="card-chips" id="vocab-front-chips"></div>
       <div class="vocab-it" id="vocab-it-text"></div>
       <div class="vocab-pos" id="vocab-pos-text"></div>
-      <button onclick="event.stopPropagation();speakVocabCard()" id="vocab-speak-btn" style="background:var(--italian-light);border:1px solid rgba(246,173,85,0.3);border-radius:30px;padding:6px 14px;font-size:11px;font-weight:500;color:var(--italian);cursor:pointer;font-family:'Space Grotesk',sans-serif;margin-top:10px;-webkit-tap-highlight-color:transparent;">▶ Ascolta</button>
       <div class="vocab-es hidden" id="vocab-es-text"></div>
       <div class="vocab-ex-it hidden" id="vocab-ex-it"></div>
       <div class="vocab-ex-es hidden" id="vocab-ex-es"></div>
       <div class="card-hint" id="vocab-hint">tap to reveal</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:10px;">
+      <button onclick="speakVocabCard()" style="background:var(--italian-light);border:1px solid rgba(246,173,85,0.3);border-radius:30px;padding:8px 20px;font-size:13px;font-weight:500;color:var(--italian);cursor:pointer;font-family:'Space Grotesk',sans-serif;-webkit-tap-highlight-color:transparent;">▶ Ascolta</button>
     </div>
     <div class="card-actions hidden" id="vocab-actions">
       <button class="btn-again" onclick="vocabAnswer(false)">Again</button>
